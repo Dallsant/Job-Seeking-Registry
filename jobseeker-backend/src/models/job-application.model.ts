@@ -3,13 +3,13 @@ import { Entity, model, property } from '@loopback/repository';
 @model({ settings: { strict: false } })
 export class JobApplication extends Entity {
 
-
   @property({
     type: 'string',
     required: false,
     index: {
       unique: true
-    }
+    },
+    id: true,
   })
   id: string;
 
@@ -18,6 +18,12 @@ export class JobApplication extends Entity {
     required: false
   })
   description: string;
+
+  // @property({
+  //   type: 'string',
+  //   required: false
+  // })
+  // user: string;
 
   @property({
     type: 'string',
@@ -41,14 +47,14 @@ export class JobApplication extends Entity {
     type: 'string',
     required: true
   })
-  applicationDate: string;
+  application_date: string;
 
   @property({
     type: 'string',
-    required: true,
+    required: false,
     default: 'none'
   })
-  responseDate: string;
+  response_date: string;
 
   @property({
     type: 'string',
