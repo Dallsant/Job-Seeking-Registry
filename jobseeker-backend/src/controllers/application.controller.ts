@@ -26,6 +26,7 @@ import { ResponseManager } from '../services/response-manager';
 import { UserRepository } from '../repositories';
 import { inject } from '@loopback/context';
 
+
 export class ApplicationController {
   public responseObject: ResponseManager;
   constructor(
@@ -38,7 +39,7 @@ export class ApplicationController {
 
   @post('/job-applications')
   async create(@requestBody() jobApplication: any): Promise<any> {
-    let fields = {
+    const fields = {
       'description': 'string',
       // 'user': 'string',
       'company': 'string',
@@ -64,7 +65,7 @@ export class ApplicationController {
   async count(
   ): Promise<any> {
     try {
-      let count = await this.jobApplicationRepository.count();
+      const count = await this.jobApplicationRepository.count();
       this.responseObject.data = count;
       return this.responseObject.successResponse();      
     } catch (error) {
@@ -77,7 +78,7 @@ export class ApplicationController {
     @param.query.object('filter', getFilterSchemaFor(JobApplication)) filter?: Filter<JobApplication>,
   ): Promise<any> {
     try {
-      let applications = await this.jobApplicationRepository.find(filter);
+      const applications = await this.jobApplicationRepository.find(filter);
       this.responseObject.data = applications;
       return this.responseObject.successResponse()   
     } catch (error) {
@@ -87,7 +88,7 @@ export class ApplicationController {
   @get('/job-applications/{id}')
   async findById(@param.path.string('id') id: string): Promise<any> {
     try {
-      let application = await this.jobApplicationRepository.findById(id);
+      const application = await this.jobApplicationRepository.findById(id);
       this.responseObject.data = application;
       return this.responseObject.successResponse()   
     } catch (error) {
