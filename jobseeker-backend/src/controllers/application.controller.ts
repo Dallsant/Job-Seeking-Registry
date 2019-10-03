@@ -38,7 +38,6 @@ export class ApplicationController {
 
   @post('/job-applications')
   async create(@requestBody() jobApplication: any): Promise<any> {
-    console.log(jobApplication);
     let fields = {
       'description': 'string',
       // 'user': 'string',

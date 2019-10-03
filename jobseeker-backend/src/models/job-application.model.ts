@@ -1,5 +1,5 @@
-import { Entity, model, property } from '@loopback/repository';
-
+import { Entity, model, property, belongsTo } from '@loopback/repository';
+import {User} from './user.model';
 @model({ settings: { strict: false } })
 export class JobApplication extends Entity {
 
@@ -15,15 +15,15 @@ export class JobApplication extends Entity {
 
   @property({
     type: 'string',
+    required: true
+  })
+  user: string;
+
+  @property({
+    type: 'string',
     required: false
   })
   description: string;
-
-  // @property({
-  //   type: 'string',
-  //   required: false
-  // })
-  // user: string;
 
   @property({
     type: 'string',
@@ -67,7 +67,6 @@ export class JobApplication extends Entity {
     default: 'CV SENT'
   })
   status: string;
-
 
   // Define well-known properties here
 

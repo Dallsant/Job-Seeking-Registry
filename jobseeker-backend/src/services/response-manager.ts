@@ -36,7 +36,6 @@ export class ResponseManager implements Provider<any>{
       })
   }
 
-
   validateRequest(data: any, objectVerificationect: any) {
     Object.keys(objectVerificationect).map((keyProperty, index) => {
       if (!data.hasOwnProperty(keyProperty)) {

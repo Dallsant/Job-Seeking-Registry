@@ -1,4 +1,5 @@
-import { Entity, model, property } from '@loopback/repository';
+import { Entity, model, property, hasMany } from '@loopback/repository';
+import {JobApplication} from './job-application.model';
 
 @model({ settings: { strict: false } })
 export class User extends Entity {

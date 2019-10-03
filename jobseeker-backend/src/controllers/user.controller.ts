@@ -54,8 +54,24 @@ export class UserController {
     } catch (error) {
       return this.responseObject.setResponse();
     }
+
+    let already_exists =  (await this.userRepository.findOne({where:{username:user.username}}) !== null  )
+    if(already_exists === true){
+      return this.responseObject.customResponse(true, "User already exists", 422);
+    }
     try {
+      let test = user.password;
+      console.log(user.password);
       user.password = bcrypt.hashSync(user.password, 10);
+      console.log(user.password);
+      bcrypt.hash(test, 10, function(err:any, hash:any) {
+        if (err) { throw (err); }
+        // console.log(hash)
+        bcrypt.compare(test, user.password, function(err:any, result:any) {
+            if (err) { throw (err); }
+            // console.log(result);
+        });
+    });
       await this.userRepository.create(user);
       return this.responseObject.customResponse(false, "User Created", 200);
     } catch (error) {
