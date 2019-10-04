@@ -19,7 +19,7 @@ export class SessionServiceProvider implements Provider<any> {
   ) { }
 
   value(): any {
-    return 'Login and Logout Service';
+    return 'Session Handling Service';
   }
 
   validatePassword(hashed_password:string, input_password:string){
@@ -27,7 +27,7 @@ export class SessionServiceProvider implements Provider<any> {
       const password_verification = bcrypt.compareSync(input_password,hashed_password);
       return password_verification; 
     } catch (error) {
-      throw error
+      throw error;
     }
   }
 
