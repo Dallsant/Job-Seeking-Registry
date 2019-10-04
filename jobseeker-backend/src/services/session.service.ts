@@ -33,11 +33,21 @@ export class SessionServiceProvider implements Provider<any> {
 
   async getUserFromToken(token:string){
     try {
-      const tokenInfo = await this.sessionRepository.findOne({where:{token:token}});
-      // const username:any = tokenInfo.username;
-      // const userInfo = this.userRepository.findOne({where:{username:username}}); 
+      const tokenInfo:any = await this.sessionRepository.findOne({where:{token:token}});
+      const username:any = tokenInfo.username;
+      return await this.userRepository.findOne({where:{username:username}}); 
     } catch (error) {
-      throw error
+      throw error;
+    }
+  }
+  async getSessionInfo(token:any){
+    try {
+      const session:any = await this.sessionRepository.findOne({where:{token:token}});
+      if(session!==null){
+        return session;
+      }
+    } catch (error) {
+      throw error;
     }
   }
   createNewSession(user:User, request:any){
@@ -79,24 +89,21 @@ export class SessionServiceProvider implements Provider<any> {
       for (let session of expiredSessions){
         session['is_active'] = false;
         session['logout_date'] = now;
-        session['id'] = null;
+        delete session['id'];
       }  
       await this.sessionRepository.deleteAll({token:{inq:sessionsToUpdate}});     
       await this.sessionRepository.createAll(expiredSessions);
     } catch (error) {
-      throw 'Error while terminating sessions'
+        throw 'Error while terminating sessions';
     }
   }
-    async checkTokenValidity(token:string){
+    async checkTokenValidity(token:any){
       try {
-        const now = Math.round(new Date().getTime()/100);
         const session:any = await this.sessionRepository.findOne({where:{token:token}});
-        if(session.login_date - now < global.token_expiration && session.is_active === true){
-          console.log("Valid session");
-          return true;
+        if(session !== null && session.is_active === true) {
+          return session;
         }else{
-          console.log("Invalid session");
-          return false;
+          throw 'Invalid Session';
         }
       } catch (error) {
         throw error;

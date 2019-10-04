@@ -13,8 +13,7 @@ import { ResponseManager } from './services/response-manager';
 import { SessionServiceProvider, AuthenticationServiceProvider } from './services';
 import { setInterval } from 'timers';
 // import { SessionServiceProvider } from './services/index';
-global.token_expiration = 400;
-global.session_timeout = 100;
+global.session_timeout = 86400000;
 let sessionService: any = null;
 
 

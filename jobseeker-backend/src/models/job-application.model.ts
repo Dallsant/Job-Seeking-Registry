@@ -38,7 +38,7 @@ export class JobApplication extends Entity {
   position: string;
 
   @property({
-    type: 'number',
+    type: 'string',
     required: true
   })
   location: string;
