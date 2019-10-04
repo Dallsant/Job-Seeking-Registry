@@ -39,10 +39,10 @@ export class Session extends Entity {
 
   @property({
     type: 'any',
-    required: true,
+    required: false,
     default: null
   })
-  logout_date: any;
+  logout_date?: any;
 
   @property({
     type: 'boolean',

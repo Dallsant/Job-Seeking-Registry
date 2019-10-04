@@ -8,6 +8,7 @@ const crypto = require('crypto');
 const uuidv4 = require('uuid/v4');
 const bcrypt = require('bcrypt');
 import {User} from '../models/user.model'
+import {Session} from '../models/session.model';
 import {SessionRepository, UserRepository} from '../repositories';
 
 export class SessionServiceProvider implements Provider<any> {
@@ -69,19 +70,37 @@ export class SessionServiceProvider implements Provider<any> {
     try {
       const now = Math.round(new Date().getTime()/100);
       const active_sessions:any = await this.sessionRepository.find({where:{is_active:true}});
-      const expiredSessions:any = active_sessions.filter((item:any)=>{
-        return now - item.login_date >= global.session_timeout;
+      let expiredSessions:any = active_sessions.filter((item:any)=>{
+        return (now - item.login_date >= global.session_timeout);
       });
-      for await (let session of expiredSessions){
+      const sessionsToUpdate = expiredSessions.map((item:any)=>{
+        return item.token;
+      })
+      for (let session of expiredSessions){
         session['is_active'] = false;
         session['logout_date'] = now;
-      }
-      await this.sessionRepository.updateAll(expiredSessions, active_sessions)      
+        session['id'] = null;
+      }  
+      await this.sessionRepository.deleteAll({token:{inq:sessionsToUpdate}});     
+      await this.sessionRepository.createAll(expiredSessions);
     } catch (error) {
-      throw 'an error has occurred while terminating sessions'
+      throw 'Error while terminating sessions'
     }
-
   }
-
+    async checkTokenValidity(token:string){
+      try {
+        const now = Math.round(new Date().getTime()/100);
+        const session:any = await this.sessionRepository.findOne({where:{token:token}});
+        if(session.login_date - now < global.token_expiration && session.is_active === true){
+          console.log("Valid session");
+          return true;
+        }else{
+          console.log("Invalid session");
+          return false;
+        }
+      } catch (error) {
+        throw error;
+      }
+    }
 }
 

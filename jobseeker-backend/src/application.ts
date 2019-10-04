@@ -14,7 +14,7 @@ import { SessionServiceProvider, AuthenticationServiceProvider } from './service
 import { setInterval } from 'timers';
 // import { SessionServiceProvider } from './services/index';
 global.token_expiration = 400;
-global.session_timeout = 50000;
+global.session_timeout = 100;
 let sessionService: any = null;
 
 
