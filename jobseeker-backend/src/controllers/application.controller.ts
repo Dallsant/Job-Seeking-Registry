@@ -26,6 +26,7 @@ import { ResponseManager } from '../services/response-manager';
 import { UserRepository } from '../repositories';
 import { inject } from '@loopback/context';
 import { SessionServiceProvider, DataServiceProvider } from '../services';
+const Excel = require('exceljs');
 
 
 export class ApplicationController {
@@ -112,6 +113,7 @@ export class ApplicationController {
       return this.responseObject.customResponse(true, "There was an error while handling the request", 500);
     }
   }
+
   @get('/job-applications/{id}')
   async findById(@param.path.string('id') id: string): Promise<any> {
     try {
@@ -158,9 +160,7 @@ export class ApplicationController {
         return this.responseObject.setResponse();
       }
       const application = await this.dataServiceProvider.checkUserAccessToApplication(this.request, id);
-      if (application.length > 0) {
-        await this.jobApplicationRepository.updateById(id, jobApplication);
-      }
+      if (application.length) await this.jobApplicationRepository.updateById(id, jobApplication);
       return this.responseObject.successResponse()
     } catch (error) {
       return this.responseObject.customResponse(true, "There was an error while handling the request", 500);
@@ -176,10 +176,53 @@ export class ApplicationController {
     }
     try {
       const application = await this.dataServiceProvider.checkUserAccessToApplication(this.request, id);
-      if (application.length > 0) this.jobApplicationRepository.deleteById(id);
+      if (application.length) this.jobApplicationRepository.deleteById(id);
       return this.responseObject.successResponse();
     } catch (error) {
       return this.responseObject.customResponse(true, "There was an error while processing the request", 500);
     }
   }
+
+  @get('/report/{key}')
+  async report(@param.path.string('key') id: string): Promise<any> {
+    const token = this.request.headers.token;
+    const dictionary: any = "A B C D E F G H I J K L M N O P Q R S T U V W X Y Z AA AB AC AD AE AF AG AH AI AJ AK AL AM AN AO AP AQ AR AS AT AU AV AW AX AY AZ BA BB BC BD BE BF BG BH BI BJ BK BL BM BN BO BP BQ BR BS BT BU BV BW BX BY BZ"
+
+    let session:any = {}
+    try {
+     session = await this.sessionServiceProvider.checkTokenValidity(this.request.headers['authentication']);
+    } catch (error) {
+      return this.responseObject.customResponse(true, "Invalid Session", 401);
+    }
+    try {
+      let jobApps = "ssssss";
+
+      if(jobApps !==null){
+      }else{
+        jobApps = await this.dataServiceProvider.getUserApplications(this.request);
+      }
+      let workbook = new Excel.Workbook();
+
+      const tempFilePath = `./public/reports/${session.user}.xlsx`;
+      let worksheet = workbook.addWorksheet('Job Applications', {
+        pageSetup: { paperSize: undefined, orientation: 'portrait' }, views: [
+          { state: 'frozen', ySplit: 1 }
+        ]
+      });      
+      const headerStyle = {
+        family: 2,
+        size: 11,
+        bold: true
+      }
+      const alignment = { vertical: 'center', horizontal: 'center' };
+
+      workbook.xlsx.writeFile(tempFilePath);
+      return this.responseObject.successResponse();
+    } catch (error) {
+      console.log(error)
+      return this.responseObject.customResponse(true, "There was an error while handling the request", 500);
+    }
+  }
+
+
 }

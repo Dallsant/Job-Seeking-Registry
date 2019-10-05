@@ -10,7 +10,7 @@ import { ServiceMixin } from '@loopback/service-proxy';
 import * as path from 'path';
 import { MySequence } from './sequence';
 import { ResponseManager } from './services/response-manager';
-import { SessionServiceProvider, DataServiceProvider } from './services';
+import { SessionServiceProvider, DataServiceProvider, ReportServiceProvider } from './services';
 import { setInterval } from 'timers';
 // import { SessionServiceProvider } from './services/index';
 global.session_timeout = 86400000;
@@ -43,6 +43,9 @@ export class JobseekerBackendApplication extends BootMixin(
     );
     this.bind('services.DataServiceProvider').toClass(
       DataServiceProvider
+    );
+    this.bind('services.ReportServiceProvider').toClass(
+      ReportServiceProvider
     );
     this.projectRoot = __dirname;
     // Customize @loopback/boot Booter Conventions here
