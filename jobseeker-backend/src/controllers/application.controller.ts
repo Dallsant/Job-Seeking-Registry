@@ -25,7 +25,7 @@ import { SessionRepository, JobApplicationRepository } from '../repositories';
 import { ResponseManager } from '../services/response-manager';
 import { UserRepository } from '../repositories';
 import { inject } from '@loopback/context';
-import { SessionServiceProvider, DataServiceProvider } from '../services';
+import { SessionServiceProvider, DataServiceProvider, ReportServiceProvider } from '../services';
 const Excel = require('exceljs');
 
 
@@ -42,7 +42,9 @@ export class ApplicationController {
     public sessionServiceProvider: SessionServiceProvider,
     @inject('services.DataServiceProvider')
     public dataServiceProvider: DataServiceProvider,
-  ) {
+    @inject('services.ReportServiceProvider')
+    public reportServiceProvider: ReportServiceProvider,
+    ) {
     this.responseObject = new ResponseManager(this.response);
   }
 
@@ -195,8 +197,7 @@ export class ApplicationController {
       return this.responseObject.customResponse(true, "Invalid Session", 401);
     }
     try {
-      let jobApps = "ssssss";
-
+      let jobApps = "placeHolder";
       if(jobApps !==null){
       }else{
         jobApps = await this.dataServiceProvider.getUserApplications(this.request);
@@ -214,8 +215,14 @@ export class ApplicationController {
         size: 11,
         bold: true
       }
+      const style = {
+        family: 2,
+        size: 10,
+        bold: false
+      }
       const alignment = { vertical: 'center', horizontal: 'center' };
-
+      await this.reportServiceProvider.setWorksheetColumns(worksheet, alignment, headerStyle);
+      await this.reportServiceProvider.setWorksheetData(worksheet,jobApps, style, alignment);
       workbook.xlsx.writeFile(tempFilePath);
       return this.responseObject.successResponse();
     } catch (error) {

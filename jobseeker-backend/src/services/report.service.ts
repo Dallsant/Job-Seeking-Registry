@@ -28,7 +28,7 @@ export class ReportServiceProvider implements Provider<any> {
   }
 
   //Verify if the User making the request has access to that particular Application
-  async setWorksheetColumns(worksheet:any, alignment:object, headerStyle:object) {
+  async setWorksheetColumns(worksheet:any, alignment:object, style:object) {
     try {
       let columns = [
         { header: 'Application Date', key: 'application ', width: 25, position: 'center' },
@@ -41,7 +41,8 @@ export class ReportServiceProvider implements Provider<any> {
         { header: 'Contact', key: 'contact', width: 25, position: 'center' },
       ];
       columns.forEach(element => {
-        worksheet.getCell(`${element.key}`).font = headerStyle;
+        
+        worksheet.getCell(`${element.key}`).font = style;
         worksheet.getCell(`${element.key}`).alignment = alignment; 
       });
     } catch (error) {
@@ -49,8 +50,39 @@ export class ReportServiceProvider implements Provider<any> {
     }
   }
 
-  setWorksheetData(worksheet: any, jobApplications: any, headerStyle:object, alignment: object) {
-  
+  setWorksheetData(worksheet: any, jobApps: any, 
+    style:object, alignment: object) { 
+    jobApps.forEach( (element:any, index:number) => {
+
+      // Cell Data
+      worksheet.getCell(`A${index+2}`).value = element.application_date;  
+      worksheet.getCell(`B${index+2}`).value = element.company;
+      worksheet.getCell(`C${index+2}`).value = element.location;
+      worksheet.getCell(`D${index+2}`).value = element.status;
+      worksheet.getCell(`E${index+2}`).value = element.position;
+      worksheet.getCell(`F${index+2}`).value = (element.response_date!==null)?element.response_date:'None';
+      worksheet.getCell(`G${index+2}`).value = element.contact;  
+      
+      // Cell style
+      worksheet.getCell(`A${index+2}`).font = style;  
+      worksheet.getCell(`B${index+2}`).font = style;
+      worksheet.getCell(`C${index+2}`).font = style;
+      worksheet.getCell(`D${index+2}`).font = style;
+      worksheet.getCell(`E${index+2}`).font = style;
+      worksheet.getCell(`F${index+2}`).font = style;
+      worksheet.getCell(`G${index+2}`).font = style;  
+      
+      // Cell Alignment
+      // worksheet.getCell(`A${index+2}`).alignment = alignment;  
+      // worksheet.getCell(`B$${index+2}`).alignment = alignment;
+      // worksheet.getCell(`C${index+2}`).alignment = alignment;
+      // worksheet.getCell(`D${index+2}`).alignment = alignment;
+      // worksheet.getCell(`E${index+2}`).alignment = alignment;
+      // worksheet.getCell(`F${index+2}`).alignment = alignment;
+      // worksheet.getCell(`G${index+2}`).alignment = alignment;  
+    });
+
+
   
   }
 
