@@ -10,8 +10,11 @@ import { ServiceMixin } from '@loopback/service-proxy';
 import * as path from 'path';
 import { MySequence } from './sequence';
 import { ResponseManager } from './services/response-manager';
-
-import { SessionServiceProvider, AuthenticationServiceProvider } from './services';
+import { SessionServiceProvider, DataServiceProvider } from './services';
+import { setInterval } from 'timers';
+// import { SessionServiceProvider } from './services/index';
+global.session_timeout = 86400000;
+let sessionService: any = null;
 
 
 export class JobseekerBackendApplication extends BootMixin(
@@ -35,13 +38,12 @@ export class JobseekerBackendApplication extends BootMixin(
     this.bind('services.ResponseManager').toClass(
       ResponseManager
     );
-    this.bind('services.AuthenticationServiceProvider').toClass(
-      AuthenticationServiceProvider
-    );
     this.bind('services.SessionServiceProvider').toClass(
       SessionServiceProvider
     );
-
+    this.bind('services.DataServiceProvider').toClass(
+      DataServiceProvider
+    );
     this.projectRoot = __dirname;
     // Customize @loopback/boot Booter Conventions here
     this.bootOptions = {
@@ -53,4 +55,24 @@ export class JobseekerBackendApplication extends BootMixin(
       },
     };
   }
+  async boot() {
+    await super.boot();
+    try {
+      sessionService = await this.get('services.SessionServiceProvider');
+    } catch (error) {
+      throw 'An error has occurred while starting the Session Service';
+    }
+     this.end_expired_session()
+  }
+
+   end_expired_session() {
+    setInterval( () => {
+      try {
+        sessionService.terminateExpiredSessions();
+      } catch (error) {
+        throw 'An error has occured while closing expired sessions';
+      }
+    }, 4000);
+    // 86400000 for once a day
+  };
 }

@@ -38,11 +38,11 @@ export class Session extends Entity {
   login_date: number;
 
   @property({
-    type: 'number',
-    required: true,
-    default: 0
+    type: 'any',
+    required: false,
+    default: null
   })
-  logout_date: number;
+  logout_date?: any;
 
   @property({
     type: 'boolean',

@@ -21,54 +21,76 @@ import {
   Request
 } from '@loopback/rest';
 import { JobApplication } from '../models';
-import { JobApplicationRepository } from '../repositories';
+import { SessionRepository, JobApplicationRepository } from '../repositories';
 import { ResponseManager } from '../services/response-manager';
 import { UserRepository } from '../repositories';
 import { inject } from '@loopback/context';
+import { SessionServiceProvider, DataServiceProvider } from '../services';
+
 
 export class ApplicationController {
   public responseObject: ResponseManager;
   constructor(
+    @repository(SessionRepository)
+    public sessionRepository: SessionRepository,
+    @inject(RestBindings.Http.REQUEST) public request: Request,
     @inject(RestBindings.Http.RESPONSE) private response: Response,
     @repository(JobApplicationRepository)
     public jobApplicationRepository: JobApplicationRepository,
+    @inject('services.SessionServiceProvider')
+    public sessionServiceProvider: SessionServiceProvider,
+    @inject('services.DataServiceProvider')
+    public dataServiceProvider: DataServiceProvider,
   ) {
     this.responseObject = new ResponseManager(this.response);
   }
 
   @post('/job-applications')
   async create(@requestBody() jobApplication: any): Promise<any> {
-    let fields = {
+    const fields = {
       'description': 'string',
-      // 'user': 'string',
       'company': 'string',
       'position': 'string',
       'location': 'string',
-      'application_date': 'string',
+      'application_date': 'number',
       'contact': 'string',
     }
     try {
-      this.responseObject.validateRequest(jobApplication, fields)
+      this.responseObject.validateRequest(jobApplication, fields);
     } catch (error) {
       return this.responseObject.setResponse();
     }
     try {
-      await this.jobApplicationRepository.create(jobApplication);
-      this.responseObject.successResponse();      
+      await this.sessionServiceProvider.checkTokenValidity(this.request.headers['authentication']);
     } catch (error) {
-      this.responseObject.setResponse();
+      return this.responseObject.customResponse(true, "Invalid Session", 401);
+    }
+    try {
+      const sessionInfo: any = await this.sessionServiceProvider.getSessionInfo(this.request.headers['authentication']);
+      if (sessionInfo !== null) {
+        jobApplication.user = sessionInfo.user;
+        await this.jobApplicationRepository.create(jobApplication);
+        return this.responseObject.successResponse();
+      }
+    } catch (error) {
+      return this.responseObject.defaultErrorResponse()
     }
   }
-
   @get('/job-applications/count')
   async count(
   ): Promise<any> {
     try {
-      let count = await this.jobApplicationRepository.count();
-      this.responseObject.data = count;
-      return this.responseObject.successResponse();      
+      await this.sessionServiceProvider.checkTokenValidity(this.request.headers['authentication']);
     } catch (error) {
-      return this.responseObject.setResponse();
+      return this.responseObject.customResponse(true, "Invalid Session", 401);
+    }
+    try {
+      const userApps = await this.dataServiceProvider.getUserApplications(this.request);
+      const count = userApps.length;
+      this.responseObject.data = count;
+      return this.responseObject.successResponse();
+    } catch (error) {
+      return this.responseObject.customResponse(true, "There was an error while handling the request", 500);
     }
   }
 
@@ -77,21 +99,33 @@ export class ApplicationController {
     @param.query.object('filter', getFilterSchemaFor(JobApplication)) filter?: Filter<JobApplication>,
   ): Promise<any> {
     try {
-      let applications = await this.jobApplicationRepository.find(filter);
-      this.responseObject.data = applications;
-      return this.responseObject.successResponse()   
+      await this.sessionServiceProvider.checkTokenValidity(this.request.headers['authentication']);
     } catch (error) {
-      return this.responseObject.setResponse();
+      return this.responseObject.customResponse(true, "Invalid Session", 401);
+    }
+    try {
+      const applications = await this.dataServiceProvider.getUserApplications(this.request);
+      this.responseObject.data = applications;
+      return this.responseObject.successResponse();
+    } catch (error) {
+      console.log(error);
+      return this.responseObject.customResponse(true, "There was an error while handling the request", 500);
     }
   }
   @get('/job-applications/{id}')
   async findById(@param.path.string('id') id: string): Promise<any> {
     try {
-      let application = await this.jobApplicationRepository.findById(id);
-      this.responseObject.data = application;
-      return this.responseObject.successResponse()   
+      await this.sessionServiceProvider.checkTokenValidity(this.request.headers['authentication']);
     } catch (error) {
-      return this.responseObject.setResponse();
+      return this.responseObject.customResponse(true, "Invalid Session", 401);
+    }
+    try {
+      const application = await this.dataServiceProvider.checkUserAccessToApplication(this.request, id);
+      this.responseObject.data = application;
+      return this.responseObject.successResponse()
+    } catch (error) {
+      console.log(error)
+      return this.responseObject.customResponse(true, "There was an error while handling the request", 500);
     }
   }
 
@@ -102,6 +136,11 @@ export class ApplicationController {
     jobApplication: JobApplication,
   ): Promise<any> {
     try {
+      try {
+        await this.sessionServiceProvider.checkTokenValidity(this.request.headers['authentication']);
+      } catch (error) {
+        return this.responseObject.customResponse(true, "Invalid Session", 401);
+      }
       let fields = {
         'id': 'string',
         'description': 'string',
@@ -118,20 +157,29 @@ export class ApplicationController {
       } catch (error) {
         return this.responseObject.setResponse();
       }
-      await this.jobApplicationRepository.updateById(id, jobApplication);
-      return this.responseObject.successResponse()   
+      const application = await this.dataServiceProvider.checkUserAccessToApplication(this.request, id);
+      if (application.length > 0) {
+        await this.jobApplicationRepository.updateById(id, jobApplication);
+      }
+      return this.responseObject.successResponse()
     } catch (error) {
-      return this.responseObject.setResponse();
-    } 
+      return this.responseObject.customResponse(true, "There was an error while handling the request", 500);
+    }
   }
 
   @del('/job-applications/{id}')
   async deleteById(@param.path.string('id') id: string): Promise<any> {
     try {
-      await this.jobApplicationRepository.deleteById(id);
-      return this.responseObject.successResponse()   
+      await this.sessionServiceProvider.checkTokenValidity(this.request.headers['authentication']);
     } catch (error) {
-      return this.responseObject.setResponse();
-    }   
-     }
+      return this.responseObject.customResponse(true, "Invalid Session", 401);
+    }
+    try {
+      const application = await this.dataServiceProvider.checkUserAccessToApplication(this.request, id);
+      if (application.length > 0) this.jobApplicationRepository.deleteById(id);
+      return this.responseObject.successResponse();
+    } catch (error) {
+      return this.responseObject.customResponse(true, "There was an error while processing the request", 500);
+    }
+  }
 }

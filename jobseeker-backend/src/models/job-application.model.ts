@@ -38,23 +38,24 @@ export class JobApplication extends Entity {
   position: string;
 
   @property({
-    type: 'number',
+    type: 'string',
     required: true
   })
   location: string;
 
   @property({
-    type: 'string',
-    required: true
+    type: 'number',
+    required: true,
+    default:0
   })
-  application_date: string;
+  application_date: number;
 
   @property({
-    type: 'string',
+    type: 'number',
     required: false,
-    default: 'none'
+    default: 0
   })
-  response_date: string;
+  response_date: number;
 
   @property({
     type: 'string',
