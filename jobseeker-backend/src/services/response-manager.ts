@@ -48,13 +48,14 @@ export class ResponseManager implements Provider<any>{
           try {
             this.verifyTyping(objectVerificationect[keyProperty], data, keyProperty);
           } catch (error) {
-            throw ('Error');
+            throw (error);
           }
         }
       }
     }, this);
   }
 
+  // Validation the typing of the request sent by the User
   verifyTyping(dataType: string, data: any, key: string) {
     switch (dataType) {
       case 'number':

@@ -24,6 +24,7 @@ import { User } from '../models';
 import { UserRepository } from '../repositories';
 import { ResponseManager } from '../services/response-manager';
 import { inject } from '@loopback/context';
+import { SessionServiceProvider, DataServiceProvider } from '../services';
 const bcrypt = require('bcrypt');
 
 export class UserController {
@@ -32,7 +33,8 @@ export class UserController {
   constructor(
     @repository(UserRepository) public userRepository: UserRepository,
     @inject(RestBindings.Http.RESPONSE) private response: Response,
-
+    @inject(RestBindings.Http.REQUEST) public request: Request,
+    @inject('services.SessionServiceProvider') public sessionServiceProvider: SessionServiceProvider,
   ) {
     this.responseObject = new ResponseManager(this.response);
   }
@@ -42,6 +44,11 @@ export class UserController {
     @requestBody()
     user: any,
   ): Promise<any> {
+    try {
+      await this.sessionServiceProvider.checkTokenValidity(this.request.headers['authentication']);
+    } catch (error) {
+      return this.responseObject.customResponse(true, "Invalid Session", 401);
+    }
     let fields = {
       'name': 'string',
       'last_name': 'string',
@@ -61,15 +68,11 @@ export class UserController {
     }
     try {
       let test = user.password;
-      console.log(user.password);
       user.password = bcrypt.hashSync(user.password, 10);
-      console.log(user.password);
       bcrypt.hash(test, 10, function(err:any, hash:any) {
         if (err) { throw (err); }
-        // console.log(hash)
         bcrypt.compare(test, user.password, function(err:any, result:any) {
             if (err) { throw (err); }
-            // console.log(result);
         });
     });
       await this.userRepository.create(user);
@@ -83,6 +86,11 @@ export class UserController {
   async count(
   ): Promise<any> {
     try {
+      await this.sessionServiceProvider.checkTokenValidity(this.request.headers['authentication']);
+    } catch (error) {
+      return this.responseObject.customResponse(true, "Invalid Session", 401);
+    }
+    try {
       let count = await this.userRepository.count();
       this.responseObject.data = count;
       return this.responseObject.successResponse();
@@ -94,6 +102,11 @@ export class UserController {
   @get('/users')
   async find(
   ): Promise<any> {
+    try {
+      await this.sessionServiceProvider.checkTokenValidity(this.request.headers['authentication']);
+    } catch (error) {
+      return this.responseObject.customResponse(true, "Invalid Session", 401);
+    }  
     try {
       let applications = await this.userRepository.find({
         fields: {
@@ -115,6 +128,11 @@ export class UserController {
     @requestBody()
     user: any,
   ): Promise<any> {
+    try {
+      await this.sessionServiceProvider.checkTokenValidity(this.request.headers['authentication']);
+    } catch (error) {
+      return this.responseObject.customResponse(true, "Invalid Session", 401);
+    }
     let fields = {
       'name': 'string',
       'last_name': 'string',

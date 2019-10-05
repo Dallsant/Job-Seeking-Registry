@@ -52,7 +52,7 @@ export class ApplicationController {
       'company': 'string',
       'position': 'string',
       'location': 'string',
-      'application_date': 'string',
+      'application_date': 'number',
       'contact': 'string',
     }
     try {
@@ -85,7 +85,8 @@ export class ApplicationController {
       return this.responseObject.customResponse(true, "Invalid Session", 401);
     }
     try {
-      const count = await this.sessionServiceProvider.getUserApplications(this.request).length;
+      const userApps = await this.dataServiceProvider.getUserApplications(this.request);
+      const count = userApps.length;
       this.responseObject.data = count;
       return this.responseObject.successResponse();
     } catch (error) {
@@ -118,12 +119,12 @@ export class ApplicationController {
     } catch (error) {
       return this.responseObject.customResponse(true, "Invalid Session", 401);
     }
-
     try {
       const application = await this.dataServiceProvider.checkUserAccessToApplication(this.request, id);
       this.responseObject.data = application;
       return this.responseObject.successResponse()
     } catch (error) {
+      console.log(error)
       return this.responseObject.customResponse(true, "There was an error while handling the request", 500);
     }
   }

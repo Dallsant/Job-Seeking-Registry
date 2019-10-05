@@ -86,6 +86,11 @@ export class SessionController {
     @requestBody()
     session: any,
   ): Promise<any> {
+    try {
+      await this.sessionServiceProvider.checkTokenValidity(this.request.headers['authentication']);
+    } catch (error) {
+      return this.responseObject.customResponse(true, "Invalid Session", 401);
+    }
     const fields = {
       'token': 'string',
     }

@@ -26,15 +26,15 @@ export class DataServiceProvider implements Provider<any> {
     return 'Data Handling Service';
   }
 
+    // ## Get all JobApplications based on the User making the request
   async getUserApplications(request:any){
     try {
       const token = request.header.authentication;
       const session:any = await this.sessionServiceProvider.getSessionInfo(token);
       // For some reason doesn't return anything??, to be fixed in the future
       // const jobApplications = await this.jobApplicationRepository.find({where:{user:session.user}});
-      // console.log(jobApplications);
-      let jobApplications = await this.jobApplicationRepository.find();
-      let filteredApplications = jobApplications.filter((item:any)=>{
+      const jobApplications = await this.jobApplicationRepository.find();
+      const filteredApplications = jobApplications.filter((item:any)=>{
         return item.user === session.user;
       });
       return filteredApplications;      
@@ -43,18 +43,19 @@ export class DataServiceProvider implements Provider<any> {
     }
     }
 
+      //Verify if the User making the request has access to that particular Application
     async checkUserAccessToApplication(request:any, id:any){
       try {
-        const token = request.header.authentication;
+        const token = request.headers.authentication;
         const session:any = await this.sessionServiceProvider.getSessionInfo(token);
-        let jobApplication = await this.jobApplicationRepository.findOne({where:{id:id, user:session.user}});
-        if(jobApplication!==null){
-          return jobApplication
+        const jobApplication:any = await this.jobApplicationRepository.findOne({where:{id:id}});
+        if(jobApplication.user === session.user){
+          return jobApplication;
         }else{
-          throw 'Access Denied'
+          throw 'Access Denied';
         }      
       } catch (error) {
         throw error;
       }   
+  }
 }
-
