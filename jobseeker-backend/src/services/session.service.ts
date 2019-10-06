@@ -31,7 +31,7 @@ export class SessionServiceProvider implements Provider<any> {
     }
   }
 
-  async getUserFromToken(token: string) {
+  async getUserFromToken(token: any) {
     try {
       const tokenInfo: any = await this.sessionRepository.findOne({ where: { token: token } });
       const username: any = tokenInfo.username;

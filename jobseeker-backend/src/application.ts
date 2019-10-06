@@ -10,8 +10,11 @@ import { ServiceMixin } from '@loopback/service-proxy';
 import * as path from 'path';
 import { MySequence } from './sequence';
 import { ResponseManager } from './services/response-manager';
-import { SessionServiceProvider, DataServiceProvider } from './services';
+import { SessionServiceProvider, DataServiceProvider, ReportServiceProvider } from './services';
 import { setInterval } from 'timers';
+// const redis = require('async-redis');
+const fs = require('fs');
+
 // import { SessionServiceProvider } from './services/index';
 global.session_timeout = 86400000;
 let sessionService: any = null;
@@ -44,6 +47,9 @@ export class JobseekerBackendApplication extends BootMixin(
     this.bind('services.DataServiceProvider').toClass(
       DataServiceProvider
     );
+    this.bind('services.ReportServiceProvider').toClass(
+      ReportServiceProvider
+    );
     this.projectRoot = __dirname;
     // Customize @loopback/boot Booter Conventions here
     this.bootOptions = {
@@ -58,12 +64,29 @@ export class JobseekerBackendApplication extends BootMixin(
   async boot() {
     await super.boot();
     try {
+      await this.readConfigFile();
+    } catch (error) {
+      throw 'Error while reading the config file'
+    }
+    try {
       sessionService = await this.get('services.SessionServiceProvider');
     } catch (error) {
       throw 'An error has occurred while starting the Session Service';
     }
      this.end_expired_session()
   }
+
+    async readConfigFile(){
+      let config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
+      try {
+        // global.redisClient = await redis.createClient({ port: config['redis_port'], 
+        // host: config['redis_ip'], password: config['redis_password'] });
+      } catch (error) {
+        console.log(error);
+        global.redisClient = null;
+      }
+  
+    }
 
    end_expired_session() {
     setInterval( () => {
