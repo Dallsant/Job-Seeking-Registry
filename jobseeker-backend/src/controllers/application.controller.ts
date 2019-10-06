@@ -185,26 +185,18 @@ export class ApplicationController {
     }
   }
 
-  @get('/report/{key}')
-  async report(@param.path.string('key') id: string): Promise<any> {
-    const token = this.request.headers.token;
-    const dictionary: any = "A B C D E F G H I J K L M N O P Q R S T U V W X Y Z AA AB AC AD AE AF AG AH AI AJ AK AL AM AN AO AP AQ AR AS AT AU AV AW AX AY AZ BA BB BC BD BE BF BG BH BI BJ BK BL BM BN BO BP BQ BR BS BT BU BV BW BX BY BZ"
-
+  @post('/report')
+  async createReport(@requestBody() jobApplication: any): Promise<any> {
     let session:any = {}
     try {
-     session = await this.sessionServiceProvider.checkTokenValidity(this.request.headers['authentication']);
+      session = await this.sessionServiceProvider.checkTokenValidity(this.request.headers['authentication']);
     } catch (error) {
       return this.responseObject.customResponse(true, "Invalid Session", 401);
     }
     try {
-      let jobApps = "placeHolder";
-      if(jobApps !==null){
-      }else{
-        jobApps = await this.dataServiceProvider.getUserApplications(this.request);
-      }
+      const jobApps = await this.dataServiceProvider.getUserApplications(this.request);
       let workbook = new Excel.Workbook();
-
-      const tempFilePath = `./public/reports/${session.user}.xlsx`;
+      const tempFilePath = `/public/reports/${session.user}.xlsx`;
       let worksheet = workbook.addWorksheet('Job Applications', {
         pageSetup: { paperSize: undefined, orientation: 'portrait' }, views: [
           { state: 'frozen', ySplit: 1 }
@@ -223,13 +215,55 @@ export class ApplicationController {
       const alignment = { vertical: 'center', horizontal: 'center' };
       await this.reportServiceProvider.setWorksheetColumns(worksheet, alignment, headerStyle);
       await this.reportServiceProvider.setWorksheetData(worksheet,jobApps, style, alignment);
+      this.responseObject.data.reportRoute = tempFilePath;
       workbook.xlsx.writeFile(tempFilePath);
       return this.responseObject.successResponse();
     } catch (error) {
       console.log(error)
-      return this.responseObject.customResponse(true, "There was an error while handling the request", 500);
+      return this.responseObject.defaultErrorResponse()
     }
   }
+  }
 
+  // @get('/report/{key}')
+  // async report(@param.path.string('key') id: string): Promise<any> {
+  //   const token = this.request.headers.token;
+  //   const dictionary: any = "A B C D E F G H I J K L M N O P Q R S T U V W X Y Z AA AB AC AD AE AF AG AH AI AJ AK AL AM AN AO AP AQ AR AS AT AU AV AW AX AY AZ BA BB BC BD BE BF BG BH BI BJ BK BL BM BN BO BP BQ BR BS BT BU BV BW BX BY BZ"
 
-}
+  //   let session:any = {}
+  //   try {
+  //    session = await this.sessionServiceProvider.checkTokenValidity(this.request.headers['authentication']);
+  //   } catch (error) {
+  //     return this.responseObject.customResponse(true, "Invalid Session", 401);
+  //   }
+  //   try {
+  //     const jobApps = await this.dataServiceProvider.getUserApplications(this.request);
+  //     let workbook = new Excel.Workbook();
+  //     const tempFilePath = `/public/reports/${session.user}.xlsx`;
+  //     let worksheet = workbook.addWorksheet('Job Applications', {
+  //       pageSetup: { paperSize: undefined, orientation: 'portrait' }, views: [
+  //         { state: 'frozen', ySplit: 1 }
+  //       ]
+  //     });      
+  //     const headerStyle = {
+  //       family: 2,
+  //       size: 11,
+  //       bold: true
+  //     }
+  //     const style = {
+  //       family: 2,
+  //       size: 10,
+  //       bold: false
+  //     }
+  //     const alignment = { vertical: 'center', horizontal: 'center' };
+  //     await this.reportServiceProvider.setWorksheetColumns(worksheet, alignment, headerStyle);
+  //     await this.reportServiceProvider.setWorksheetData(worksheet,jobApps, style, alignment);
+  //     this.responseObject.data.reportRoute = tempFilePath;
+  //     workbook.xlsx.writeFile(tempFilePath);
+  //     return this.responseObject.successResponse();
+  //   } catch (error) {
+  //     console.log(error)
+  //     return this.responseObject.customResponse(true, "There was an error while handling the request", 500);
+  //   }
+  // }
+
