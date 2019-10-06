@@ -26,6 +26,7 @@ import { ResponseManager } from '../services/response-manager';
 import { UserRepository } from '../repositories';
 import { inject } from '@loopback/context';
 import { SessionServiceProvider, DataServiceProvider, ReportServiceProvider } from '../services';
+import { User } from '../models/index';
 const Excel = require('exceljs');
 
 
@@ -76,7 +77,7 @@ export class ApplicationController {
         return this.responseObject.successResponse();
       }
     } catch (error) {
-      return this.responseObject.defaultErrorResponse()
+      return this.responseObject.defaultErrorResponse();
     }
   }
   @get('/job-applications/count')
@@ -163,7 +164,7 @@ export class ApplicationController {
       }
       const application = await this.dataServiceProvider.checkUserAccessToApplication(this.request, id);
       if (application.length) await this.jobApplicationRepository.updateById(id, jobApplication);
-      return this.responseObject.successResponse()
+      return this.responseObject.successResponse();
     } catch (error) {
       return this.responseObject.customResponse(true, "There was an error while handling the request", 500);
     }
@@ -186,17 +187,21 @@ export class ApplicationController {
   }
 
   @post('/report')
-  async createReport(@requestBody() jobApplication: any): Promise<any> {
-    let session:any = {}
+  async createReport(@requestBody() jobApplications: JobApplication[]): Promise<any> {
+    let session:any = {};
+    let user:any;
+    let now = this.dataServiceProvider.getCurrentTime();
+    let formattedDate = this.dataServiceProvider.transformTimestampToDate(now);
     try {
       session = await this.sessionServiceProvider.checkTokenValidity(this.request.headers['authentication']);
     } catch (error) {
       return this.responseObject.customResponse(true, "Invalid Session", 401);
     }
     try {
-      const jobApps = await this.dataServiceProvider.getUserApplications(this.request);
+      user = await this.sessionServiceProvider.getUserFromToken(this.request.headers.token);
+      const userString = `${user.name[0].toUpperCase()}.${user.last_name}`;
       let workbook = new Excel.Workbook();
-      const tempFilePath = `/public/reports/${session.user}.xlsx`;
+      const tempFilePath = `./public/reports/${userString}${now}.xlsx`;
       let worksheet = workbook.addWorksheet('Job Applications', {
         pageSetup: { paperSize: undefined, orientation: 'portrait' }, views: [
           { state: 'frozen', ySplit: 1 }
@@ -212,11 +217,15 @@ export class ApplicationController {
         size: 10,
         bold: false
       }
+          let alphabet:string|string[] = "A B C D E F G H I J K L M N O P Q R S T U V W X Y Z AA AB AC AD AE AF AG AH AI AJ AK AL AM AN AO AP AQ AR AS AT AU AV AW AX AY AZ BA BB BC BD BE BF BG BH BI BJ BK BL BM BN BO BP BQ BR BS BT BU BV BW BX BY BZ";
+          alphabet = alphabet.split(" ");
+
       const alignment = { vertical: 'center', horizontal: 'center' };
-      await this.reportServiceProvider.setWorksheetColumns(worksheet, alignment, headerStyle);
-      await this.reportServiceProvider.setWorksheetData(worksheet,jobApps, style, alignment);
+      await this.reportServiceProvider.setWorksheetColumns(worksheet, alignment, headerStyle, alphabet);
+      await this.reportServiceProvider.setWorksheetData(worksheet,jobApplications, style);
       this.responseObject.data.reportRoute = tempFilePath;
-      workbook.xlsx.writeFile(tempFilePath);
+      await workbook.xlsx.writeFile(tempFilePath);
+      console.log(user);
       return this.responseObject.successResponse();
     } catch (error) {
       console.log(error)

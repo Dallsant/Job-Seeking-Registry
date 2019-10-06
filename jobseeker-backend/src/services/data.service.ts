@@ -60,9 +60,15 @@ export class DataServiceProvider implements Provider<any> {
     }
   }
 
+  getCurrentTime(){
+    const now = Math.round((new Date().getTime() / 100 ) );
+    return now;
+  }
+
   transformTimestampToDate(timestamp: number) {
     const date = moment.unix(timestamp);
-    const formattedDate = date.format('DD/MM/YYYY HH:mm:ss');
+    const formattedDate = date.format('DD/MM/YYYY');
+    // const formattedDate = date.format('DD/MM/YYYY HH:mm:ss');
     return formattedDate;
   }
 
