@@ -4,11 +4,7 @@ import {
   Where,
 } from '@loopback/repository';
 import { inject, Provider } from '@loopback/core';
-const crypto = require('crypto');
-const uuidv4 = require('uuid/v4');
-const bcrypt = require('bcrypt');
-import { User } from '../models/user.model'
-import { Session } from '../models/session.model';
+
 import { SessionRepository, UserRepository, JobApplicationRepository } from '../repositories';
 import { SessionServiceProvider } from '../services/session.service'
 import * as moment from 'moment';
@@ -60,8 +56,8 @@ export class DataServiceProvider implements Provider<any> {
     }
   }
 
-  getCurrentTime(){
-    const now = Math.round((new Date().getTime() / 100 ) );
+  getCurrentTime() {
+    const now = Math.round((new Date().getTime() / 100));
     return now;
   }
 

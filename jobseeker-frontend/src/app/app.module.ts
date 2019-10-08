@@ -9,6 +9,8 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { SessionInterceptor } from './interceptors/token.interceptor';
 import { ConfirmDirective } from './confirm.directive';
+import { AlertModule } from 'ngx-alerts';
+import { MatInputModule } from '@angular/material/input';
 
 @NgModule({
   declarations: [
@@ -18,11 +20,13 @@ import { ConfirmDirective } from './confirm.directive';
   ],
   imports: [
     BrowserModule,
+    MatInputModule,
     BrowserAnimationsModule,
     AppMaterialModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
+    AlertModule.forRoot({maxMessages: 5, timeout: 5000, position: 'right'})
   ],
   providers: [
     {

@@ -1,0 +1,69 @@
+<ngx-alerts></ngx-alerts>
+<div class="container" fxLayout="row" fxLayoutAlign="center center">
+    <mat-card>
+      <mat-card-title>Campos</mat-card-title>
+      <mat-card-content>
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" style="width:80vw">
+  
+          <ng-container matColumnDef="company">
+            <th mat-header-cell *matHeaderCellDef> Company </th>
+            <td mat-cell *matCellDef="let element"> {{element.company}} </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="position">
+            <th mat-header-cell *matHeaderCellDef> Position </th>
+            <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="location">
+            <th mat-header-cell *matHeaderCellDef> location </th>
+            <td mat-cell *matCellDef="let element"> {{element.location}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="application_date">
+            <th mat-header-cell *matHeaderCellDef> Application Date </th>
+            <td mat-cell *matCellDef="let element"> {{element.application_date}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="response_date">
+              <th mat-header-cell *matHeaderCellDef> Response Date </th>
+              <td mat-cell *matCellDef="let element"> {{element.response_date}} </td>
+            </ng-container>
+  
+            <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef> Status </th>
+                <td mat-cell *matCellDef="let element"> {{element.status}} </td>
+              </ng-container>
+              <ng-container matColumnDef="description">
+                  <th mat-header-cell *matHeaderCellDef> Description </th>
+                  <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+                </ng-container>
+                <ng-container matColumnDef="contact">
+                    <th mat-header-cell *matHeaderCellDef> Contact </th>
+                    <td mat-cell *matCellDef="let element"> {{element.contact}} </td>
+                  </ng-container>
+              <ng-container matColumnDef="options">
+            <th mat-header-cell *matHeaderCellDef> Opciones </th>
+            <td mat-cell *matCellDef="let element">
+              <button mat-icon-button color="primary" (click)="openEditJobApplicationDialog(element.id)">
+                <mat-icon matTooltip="Editar" matTooltipPosition="above">edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn">
+                <mat-icon matTooltip="Eliminar" matTooltipPosition="above">delete_forever</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+  
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </mat-card-content>
+      <mat-paginator></mat-paginator>
+    </mat-card>
+    <button (click)="getReport()">
+        <mat-icon matTooltip="Exportar" matTooltipPosition="above">get_app</mat-icon>
+      </button>
+    <a routerLink="/job-applications/add"><button class="float-button" mat-fab color="primary">
+        <mat-icon>add</mat-icon>
+      </button></a>
+  </div>

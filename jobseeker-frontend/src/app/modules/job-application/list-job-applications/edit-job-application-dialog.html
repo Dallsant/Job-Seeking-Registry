@@ -1,0 +1,49 @@
+<h3> Edit Job Application</h3>
+<form [formGroup]="fieldForm" (ngSubmit)="edit()">
+    <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+        <mat-form-field appearance="outline" fxFlex>
+            <mat-label>Company</mat-label>
+            <input matInput formControlName="company">
+        </mat-form-field>
+        <mat-form-field appearance="outline" fxFlex>
+            <mat-label>Description</mat-label>
+            <input matInput formControlName="description">
+        </mat-form-field>
+    </div>
+    <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+        <mat-form-field appearance="outline" fxFlex>
+            <mat-label>Location</mat-label>
+            <mat-select formControlName="location">
+                <mat-option *ngFor="let country of Countries" [value]="country.country">{{country.name}}</mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" fxFlex>
+                <mat-label>Status</mat-label>
+                <input matInput formControlName="status">
+            </mat-form-field>
+    </div>
+    <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+
+        <mat-form-field appearance="outline" fxFlex>
+            <mat-label>Response Date</mat-label>
+            <input matInput formControlName="response_date">
+        </mat-form-field>
+        <mat-form-field appearance="outline" fxFlex>
+                <mat-label>Application Date</mat-label>
+                <input matInput formControlName="application_date">
+            </mat-form-field>
+    </div>
+    <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+        <mat-form-field appearance="outline" fxFlex>
+            <mat-label>Contact</mat-label>
+            <textarea matInput formControlName="contact"></textarea>
+        </mat-form-field>
+        <mat-form-field appearance="outline" fxFlex>
+                <mat-label>Position</mat-label>
+                <textarea matInput formControlName="position"></textarea>
+            </mat-form-field>
+    </div>
+    <mat-card-actions fxLayoutAlign="end">
+        <button type="submit" mat-raised-button color="accent" [disabled]="jobApplicationForm.invalid">Update</button>
+    </mat-card-actions>
+</form>
