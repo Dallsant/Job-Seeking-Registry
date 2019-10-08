@@ -30,7 +30,7 @@ export class JobseekerBackendApplication extends BootMixin(
     this.sequence(MySequence);
 
     // Set up default home page
-    this.static('/', path.join(__dirname, '../public'));
+    this.static('/public', path.join(__dirname, '../public'));
 
     // Customize @loopback/rest-explorer configuration here
     this.bind(RestExplorerBindings.CONFIG).to({
@@ -73,23 +73,23 @@ export class JobseekerBackendApplication extends BootMixin(
     } catch (error) {
       throw 'An error has occurred while starting the Session Service';
     }
-     this.end_expired_session()
+    this.end_expired_session()
   }
 
-    async readConfigFile(){
-      let config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
-      try {
-        // global.redisClient = await redis.createClient({ port: config['redis_port'], 
-        // host: config['redis_ip'], password: config['redis_password'] });
-      } catch (error) {
-        console.log(error);
-        global.redisClient = null;
-      }
-  
+  async readConfigFile() {
+    const config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
+    try {
+      // global.redisClient = await redis.createClient({ port: config['redis_port'],
+      // host: config['redis_ip'], password: config['redis_password'] });
+    } catch (error) {
+      console.log(error);
+      global.redisClient = null;
     }
 
-   end_expired_session() {
-    setInterval( () => {
+  }
+
+  end_expired_session() {
+    setInterval(() => {
       try {
         sessionService.terminateExpiredSessions();
       } catch (error) {

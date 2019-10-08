@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 
-export const backend = '127.0.0.1:3000'
+// export const backend_url = '127.0.0.1:3000';
+export const backend_url = 'http://127.0.0.1:3000';
 
 @Component({
   selector: 'app-root',

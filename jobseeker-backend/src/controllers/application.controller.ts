@@ -45,7 +45,7 @@ export class ApplicationController {
     public dataServiceProvider: DataServiceProvider,
     @inject('services.ReportServiceProvider')
     public reportServiceProvider: ReportServiceProvider,
-    ) {
+  ) {
     this.responseObject = new ResponseManager(this.response);
   }
 
@@ -55,7 +55,8 @@ export class ApplicationController {
       'description': 'string',
       'company': 'string',
       'position': 'string',
-      'location': 'string',
+      'country': 'string',
+      'city': 'string',
       'application_date': 'number',
       'contact': 'string',
     }
@@ -72,6 +73,9 @@ export class ApplicationController {
     try {
       const sessionInfo: any = await this.sessionServiceProvider.getSessionInfo(this.request.headers['authentication']);
       if (sessionInfo !== null) {
+        jobApplication.location = `${jobApplication.city} - ${jobApplication.country}`;
+        delete jobApplication.country;
+        delete jobApplication.city;
         jobApplication.user = sessionInfo.user;
         await this.jobApplicationRepository.create(jobApplication);
         return this.responseObject.successResponse();
@@ -146,7 +150,7 @@ export class ApplicationController {
       } catch (error) {
         return this.responseObject.customResponse(true, "Invalid Session", 401);
       }
-      let fields = {
+      const fields = {
         'id': 'string',
         'description': 'string',
         'user': 'number',
@@ -188,10 +192,10 @@ export class ApplicationController {
 
   @post('/report')
   async createReport(@requestBody() jobApplications: JobApplication[]): Promise<any> {
-    let session:any = {};
-    let user:any;
-    let now = this.dataServiceProvider.getCurrentTime();
-    let formattedDate = this.dataServiceProvider.transformTimestampToDate(now);
+    let session: any = {};
+    let user: any;
+    const now = this.dataServiceProvider.getCurrentTime();
+    // const formattedDate = this.dataServiceProvider.transformTimestampToDate(now);
     try {
       session = await this.sessionServiceProvider.checkTokenValidity(this.request.headers['authentication']);
     } catch (error) {
@@ -200,13 +204,13 @@ export class ApplicationController {
     try {
       user = await this.sessionServiceProvider.getUserFromToken(this.request.headers.token);
       const userString = `${user.name[0].toUpperCase()}.${user.last_name}`;
-      let workbook = new Excel.Workbook();
+      const workbook = new Excel.Workbook();
       const tempFilePath = `./public/reports/${userString}${now}.xlsx`;
-      let worksheet = workbook.addWorksheet('Job Applications', {
+      const worksheet = workbook.addWorksheet('Job Applications', {
         pageSetup: { paperSize: undefined, orientation: 'portrait' }, views: [
           { state: 'frozen', ySplit: 1 }
         ]
-      });      
+      });
       const headerStyle = {
         family: 2,
         size: 11,
@@ -217,22 +221,22 @@ export class ApplicationController {
         size: 10,
         bold: false
       }
-          let alphabet:string|string[] = "A B C D E F G H I J K L M N O P Q R S T U V W X Y Z AA AB AC AD AE AF AG AH AI AJ AK AL AM AN AO AP AQ AR AS AT AU AV AW AX AY AZ BA BB BC BD BE BF BG BH BI BJ BK BL BM BN BO BP BQ BR BS BT BU BV BW BX BY BZ";
-          alphabet = alphabet.split(" ");
+      let alphabet: string | string[] = "A B C D E F G H I J K L M N O P Q R S T U V W X Y Z AA AB AC AD AE AF AG AH AI AJ AK AL AM AN AO AP AQ AR AS AT AU AV AW AX AY AZ BA BB BC BD BE BF BG BH BI BJ BK BL BM BN BO BP BQ BR BS BT BU BV BW BX BY BZ";
+      alphabet = alphabet.split(" ");
 
       const alignment = { vertical: 'center', horizontal: 'center' };
       await this.reportServiceProvider.setWorksheetColumns(worksheet, alignment, headerStyle, alphabet);
-      await this.reportServiceProvider.setWorksheetData(worksheet,jobApplications, style);
-      this.responseObject.data.reportRoute = tempFilePath;
+      this.reportServiceProvider.setWorksheetData(worksheet, jobApplications, style);
+      this.responseObject.data.reportRoute = tempFilePath.slice(1, tempFilePath.length);
       await workbook.xlsx.writeFile(tempFilePath);
-      console.log(user);
+      console.log(this.responseObject.data);
       return this.responseObject.successResponse();
     } catch (error) {
       console.log(error)
       return this.responseObject.defaultErrorResponse()
     }
   }
-  }
+}
 
   // @get('/report/{key}')
   // async report(@param.path.string('key') id: string): Promise<any> {
@@ -253,7 +257,7 @@ export class ApplicationController {
   //       pageSetup: { paperSize: undefined, orientation: 'portrait' }, views: [
   //         { state: 'frozen', ySplit: 1 }
   //       ]
-  //     });      
+  //     });
   //     const headerStyle = {
   //       family: 2,
   //       size: 11,

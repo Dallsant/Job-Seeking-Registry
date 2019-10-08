@@ -3,7 +3,10 @@ import { Routes, RouterModule } from '@angular/router';
 
 
 const routes: Routes = [
-
+  {
+    path: 'job-applications',
+    loadChildren: './modules/job-application/job-application.module#JobApplicationModule'
+},
 ];
 
 @NgModule({

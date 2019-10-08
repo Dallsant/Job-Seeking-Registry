@@ -51,7 +51,7 @@ export class LocationController {
     try {
       await this.sessionServiceProvider.checkTokenValidity(this.request.headers['authentication']);
     } catch (error) {
-      this.responseObject.data = await this.responseObject.customResponse(true, "Invalid Session", 401);
+      return this.responseObject.customResponse(true, "Invalid Session", 401);
     }
     this.responseObject.data = await this.locationRepository.count();
     return this.responseObject.successResponse();
@@ -67,6 +67,7 @@ export class LocationController {
     }
     try {
       this.responseObject.data = await this.locationRepository.find();
+      console.log("HEYY")
       return this.responseObject.successResponse();
     } catch (error) {
       return this.responseObject.defaultErrorResponse();
@@ -78,7 +79,7 @@ export class LocationController {
     try {
       await this.sessionServiceProvider.checkTokenValidity(this.request.headers['authentication']);
     } catch (error) {
-      this.responseObject.data = await this.responseObject.customResponse(true, "Invalid Session", 401);
+      return this.responseObject.customResponse(true, "Invalid Session", 401);
     }
     try {
       this.responseObject.data = await this.locationRepository.findById(id);
