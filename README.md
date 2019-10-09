@@ -1,2 +1,2 @@
 # Job-Seeking-Registry
-A simple Web App Built Using LoopBack 4 and  Angular 7 aimed at keeping control of job applications.
+A simple Web App aimed at keeping control of job postulations, built using Node.js (Loopback4) and Angular 7.
