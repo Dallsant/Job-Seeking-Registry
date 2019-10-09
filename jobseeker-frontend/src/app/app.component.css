@@ -8,3 +8,9 @@ mat-sidenav-container {
     border-top: 1px solid black !important;
     text-decoration: none !important;
 }
+
+.example-fill-remaining-space {
+    /* This fills the remaining space, by using flexbox. 
+       Every toolbar row uses a flexbox row layout. */
+    flex: 1 1 auto;
+}

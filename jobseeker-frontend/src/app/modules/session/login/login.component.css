@@ -1,4 +1,8 @@
-#session {
-    width: 33vw;
-    height: 30vh;
+
+#content {
+    height: 90vh;
+}
+
+#session{
+    width: 34vw
 }

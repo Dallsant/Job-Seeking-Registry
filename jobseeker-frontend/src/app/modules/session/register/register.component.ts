@@ -5,13 +5,13 @@ import { SessionService } from '../session.service';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  selector: 'app-register',
+  templateUrl: './register.component.html',
+  styleUrls: ['./register.component.css']
 })
-export class LoginComponent implements OnInit {
+export class RegisterComponent implements OnInit {
 
-  loginForm: FormGroup;
+  registerForm: FormGroup;
   constructor(
     private fb: FormBuilder,
     private alertService: AlertService,
@@ -19,42 +19,27 @@ export class LoginComponent implements OnInit {
     private router: Router
   ) { }
 
-  login() {
-    this.sessionService.login(this.loginForm.value).subscribe(data => {
+  register() {
+    this.sessionService.register(this.registerForm.value).subscribe(data => {
       if (data.error === false){
-        localStorage.setItem('token', data.data.token);
-        this.alertService.success('Wellcome!');
-        this.router.navigateByUrl('job-applications/list');
-      }
-      if (data.error === true){
-        this.alertService.danger('Error: ' + data.message)
-      }
-
-    }, err => {
-      this.alertService.danger('Error: ' + err.error.message);
-    });
-  }
-
-  logout() {
-    this.sessionService.login(this.loginForm.value).subscribe(data => {
-      if (data.error === false){
-        this.alertService.success('Bye bye');
+        this.alertService.success('Account Created!');
         this.router.navigateByUrl('session/login');
-        localStorage.clear();
       }
       if (data.error === true){
         this.alertService.danger('Error: ' + data.message)
       }
-
     }, err => {
       this.alertService.danger('Error: ' + err.error.message);
     });
   }
 
   ngOnInit() {
-    this.loginForm = new FormGroup({
-      username: new FormControl('edallsant', [Validators.required]),
-      password: new FormControl('123456789', [Validators.required]),
+    this.registerForm = new FormGroup({
+      name: new FormControl('', [Validators.required]),
+      last_name: new FormControl('', [Validators.required]),
+      email: new FormControl('', [Validators.required]),
+      username: new FormControl('', [Validators.required]),
+      password: new FormControl('', [Validators.required]),
     });
 
   }

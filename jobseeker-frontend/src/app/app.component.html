@@ -1,9 +1,16 @@
 <mat-sidenav-container class="non-side-var">
 
   <mat-sidenav-content class="non-side-var">
-      <mat-toolbar color="primary"><button mat-button (click)="sidenav.toggle()">
-          <mat-icon>menu</mat-icon>
-        </button> </mat-toolbar>
+      <mat-toolbar color="warn">
+          <span flex></span>
+          <button mat-button  (click)="sidenav.toggle()">
+          <mat-icon >menu</mat-icon>
+          </button>  
+                  <!-- <button mat-button  (click)="sidenav.toggle()">
+          <mat-icon >menu</mat-icon>
+          <span> Job Seeker</span>
+          </button>  -->
+      </mat-toolbar>
     <router-outlet></router-outlet>
 
   </mat-sidenav-content>

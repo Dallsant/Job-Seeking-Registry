@@ -11,6 +11,11 @@ const routes: Routes = [
     path: 'session',
     loadChildren: './modules/session/session.module#SessionModule'
   }
+  ,
+  {
+    path: '',
+    loadChildren: './modules/session/session.module#SessionModule'
+  }
 ];
 
 @NgModule({

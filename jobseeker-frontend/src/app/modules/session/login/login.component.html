@@ -1,7 +1,7 @@
 <ngx-alerts></ngx-alerts>
-<div class="container" fxLayout="row" fxLayoutAlign="center center">
+<div class="container" id="content" fxLayout="row" fxLayoutAlign="center center">
   <mat-card id="session">
-     <form fxLayout="column" [formGroup]="loginForm" (ngSubmit)="login()">
+    <form fxLayout="column" [formGroup]="loginForm" (ngSubmit)="login()">
       <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
         <mat-form-field appearance="outline" fxFlex>
           <mat-label>User</mat-label>
@@ -16,10 +16,18 @@
           <mat-icon matSuffix>remove_red_eye</mat-icon>
         </mat-form-field>
       </div>
-      <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px"
-        fxLayoutAlign="center center">
+      <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
+        <mat-label>
+          Do not have an account?
+          <strong>
+            <a routerLink="/session/register"> Register </a>
+          </strong>
+        </mat-label>
+      </div>
+      <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px" fxLayoutAlign="end end">
         <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid">Login</button>
       </div>
+
     </form>
   </mat-card>
 </div>

@@ -29,6 +29,16 @@ export class SessionService {
       .pipe();
   }
 
+  register(params: any): Observable<any> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+    return this.httpClient.post<any>(backend_url + '/users', JSON.stringify(params), httpOptions)
+      .pipe();
+  }
+
   logout(): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({

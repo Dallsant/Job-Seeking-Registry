@@ -19,11 +19,13 @@
             <mat-label>Position</mat-label>
             <input matInput formControlName="position">
           </mat-form-field>
+
           <mat-form-field appearance="outline" fxFlex>
             <mat-label>Country</mat-label>
             <mat-select formControlName="country">
               <mat-option *ngFor="let country of Countries" (click)="setCities(country)"[value]="country.country">{{country.country}}</mat-option>
             </mat-select>
+
           </mat-form-field>
           <mat-form-field appearance="outline" fxFlex>
               <mat-label>City</mat-label>
@@ -51,6 +53,7 @@
             <mat-label>Contact</mat-label>
             <input type="email" matInput formControlName="contact">
           </mat-form-field>
+          
           <mat-form-field appearance="outline" fxFlex>
             <mat-label>Status</mat-label>
             <mat-select formControlName="status">

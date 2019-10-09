@@ -27,13 +27,10 @@ export class DataServiceProvider implements Provider<any> {
   // ## Get all JobApplications based on the User making the request
   async getUserApplications(request: any) {
     try {
-      console.log(request);
       const token = request.headers.authorization;
-      console.log(token);
       const session: any = await this.sessionServiceProvider.getSessionInfo(token);
       // For some reason doesn't seem to work, to be fixed in the future
       // const jobApplications = await this.jobApplicationRepository.find({where:{user:session.user}});
-      console.log(await this.sessionServiceProvider.getUserFromToken(token));
       const jobApplications = await this.jobApplicationRepository.find();
       const filteredApplications = jobApplications.filter((item: any) => {
         return item.user === session.user;
