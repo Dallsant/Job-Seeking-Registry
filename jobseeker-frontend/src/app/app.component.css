@@ -1,0 +1,10 @@
+mat-sidenav-container {
+    height: 100vh !important;
+}
+.non-side-var {
+    overflow-x: hidden !important;
+}
+.mat-divider{
+    border-top: 1px solid black !important;
+    text-decoration: none !important;
+}

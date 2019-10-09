@@ -51,6 +51,12 @@
             <mat-label>Contact</mat-label>
             <input type="email" matInput formControlName="contact">
           </mat-form-field>
+          <mat-form-field appearance="outline" fxFlex>
+            <mat-label>Status</mat-label>
+            <mat-select formControlName="status">
+              <mat-option *ngFor="let status of StatusOptions">{{status}}</mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
 
         <mat-card-actions fxLayoutAlign="end">

@@ -38,6 +38,12 @@ export class JobApplicationService {
       return this.httpClient.get<any>(backend_url + '/locations')
       .pipe();
   }
+
+  getStatusOptions(): Observable<any> {
+    return this.httpClient.get<any>(backend_url + '/status-options')
+    .pipe();
+}
+
   getDetail(id:any): Observable<any> {
     return this.httpClient.get<any>(backend_url + '/job-applications/'+id)
       .pipe();

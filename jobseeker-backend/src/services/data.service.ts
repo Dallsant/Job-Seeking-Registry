@@ -8,6 +8,7 @@ import { inject, Provider } from '@loopback/core';
 import { SessionRepository, UserRepository, JobApplicationRepository } from '../repositories';
 import { SessionServiceProvider } from '../services/session.service'
 import * as moment from 'moment';
+import { timingSafeEqual } from 'crypto';
 
 export class DataServiceProvider implements Provider<any> {
 
@@ -26,10 +27,13 @@ export class DataServiceProvider implements Provider<any> {
   // ## Get all JobApplications based on the User making the request
   async getUserApplications(request: any) {
     try {
-      const token = request.header.authentication;
+      console.log(request);
+      const token = request.headers.authorization;
+      console.log(token);
       const session: any = await this.sessionServiceProvider.getSessionInfo(token);
       // For some reason doesn't seem to work, to be fixed in the future
       // const jobApplications = await this.jobApplicationRepository.find({where:{user:session.user}});
+      console.log(await this.sessionServiceProvider.getUserFromToken(token));
       const jobApplications = await this.jobApplicationRepository.find();
       const filteredApplications = jobApplications.filter((item: any) => {
         return item.user === session.user;

@@ -13,7 +13,9 @@ export class AddJobApplicationComponent implements OnInit {
 
   addJobApplicationForm: FormGroup;
   Countries: any;
-  Cities:any
+  Cities:any;
+  StatusOptions:string[];
+
   constructor(
     private fb: FormBuilder,
     private alertService: AlertService,
@@ -28,6 +30,11 @@ export class AddJobApplicationComponent implements OnInit {
   }
   setCities(country){
     this.Cities = country.cities;
+  }
+  getStatusOptions(){
+    this.jobApplicationService.getStatusOptions().subscribe(data=> {
+      this.StatusOptions = data.data;
+    })
   }
   saveJobApplication() {
     // Parse dates to timestamp
@@ -45,7 +52,6 @@ export class AddJobApplicationComponent implements OnInit {
       this.alertService.danger('Error: ' + err.error.message);
     })
   }
-  // default: () => Math.round((new Date().getTime() / 100 ) )
   ngOnInit() {
     this.addJobApplicationForm = new FormGroup({
       description: new FormControl(''),
@@ -55,10 +61,11 @@ export class AddJobApplicationComponent implements OnInit {
       application_date: new FormControl(new Date() , [Validators.required]),
       response_date: new FormControl(new Date()),
       contact: new FormControl('', [Validators.required]),
-      city: new FormControl('', [Validators.required])
+      city: new FormControl('', [Validators.required]),
+      status:  new FormControl('')
     });
-    // this.test();
     this.getCountries();
+    this.getStatusOptions();
   }
 
 }
