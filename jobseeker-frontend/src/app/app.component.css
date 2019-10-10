@@ -4,13 +4,20 @@ mat-sidenav-container {
 .non-side-var {
     overflow-x: hidden !important;
 }
-.mat-divider{
+/* .mat-divider{
     border-top: 1px solid black !important;
     text-decoration: none !important;
+} */
+
+.align-center {
+    text-align: center !important
 }
 
-.example-fill-remaining-space {
-    /* This fills the remaining space, by using flexbox. 
-       Every toolbar row uses a flexbox row layout. */
+.filler {
     flex: 1 1 auto;
+}
+
+mat-card-title {
+    margin: 15px;
+    text-align: center !important
 }

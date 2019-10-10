@@ -1,7 +1,13 @@
 <ngx-alerts></ngx-alerts>
 <div class="container" fxLayout="row" fxLayoutAlign="center center">
     <mat-card>
-      <mat-card-title>Job Applications</mat-card-title>
+      <mat-card-title fxLayoutAlign="center center">
+          Job Applications
+          <button mat-button (click)="getReport()">
+              <mat-icon matTooltip="Download" style='color:teal' matTooltipPosition="above">get_app</mat-icon>
+            </button>  
+      </mat-card-title>
+
       <mat-card-content>
         <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" style="width:80vw">
   
@@ -43,7 +49,7 @@
                     <td mat-cell *matCellDef="let element"> {{element.contact}} </td>
                   </ng-container>
               <ng-container matColumnDef="options">
-            <th mat-header-cell *matHeaderCellDef> Opciones </th>
+            <th mat-header-cell *matHeaderCellDef> Options </th>
             <td mat-cell *matCellDef="let element">
               <button mat-icon-button color="primary" (click)="openEditJobApplicationDialog(element.id)">
                 <mat-icon matTooltip="Editar" matTooltipPosition="above">edit</mat-icon>
@@ -60,10 +66,8 @@
       </mat-card-content>
       <mat-paginator></mat-paginator>
     </mat-card>
-    <button (click)="getReport()">
-        <mat-icon matTooltip="Exportar" matTooltipPosition="above">get_app</mat-icon>
-      </button>
+
     <a routerLink="/job-applications/add"><button class="float-button" mat-fab color="primary">
-        <mat-icon>add</mat-icon>
+        <mat-icon matTooltip="Add" >add</mat-icon>
       </button></a>
   </div>

@@ -29,11 +29,12 @@ export class DataServiceProvider implements Provider<any> {
     try {
       const token = request.headers.authorization;
       const session: any = await this.sessionServiceProvider.getSessionInfo(token);
+      console.log(await this.userRepository.findOne({ where: { id: session.user } }))
       // For some reason doesn't seem to work, to be fixed in the future
       // const jobApplications = await this.jobApplicationRepository.find({where:{user:session.user}});
       const jobApplications = await this.jobApplicationRepository.find();
       const filteredApplications = jobApplications.filter((item: any) => {
-        return item.user === session.user;
+        return item.user !== session.user;
       });
       return filteredApplications;
     } catch (error) {
@@ -65,7 +66,6 @@ export class DataServiceProvider implements Provider<any> {
   transformTimestampToDate(timestamp: number) {
     const date = moment.unix(timestamp);
     const formattedDate = date.format('DD/MM/YYYY');
-    // const formattedDate = date.format('DD/MM/YYYY HH:mm:ss');
     return formattedDate;
   }
 

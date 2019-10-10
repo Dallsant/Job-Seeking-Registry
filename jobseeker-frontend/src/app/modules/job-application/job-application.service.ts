@@ -2,6 +2,7 @@ import { backend_url } from './../../app.component';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
+import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'root'
@@ -67,5 +68,12 @@ export class JobApplicationService {
     };
     return this.httpClient.patch<any>(backend_url + '/job-applications/'+id, JSON.stringify(params), httpOptions)
       .pipe();
+  }
+  transformTimestampsToDate(data:any){
+    data.forEach(element => {
+      element.application_date = moment.unix(data.application_date).format('DD/MM/YYYY');
+      element.response_date = moment.unix(data.response_date).format('DD/MM/YYYY');
+    });
+    return data;
   }
 }

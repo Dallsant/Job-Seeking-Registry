@@ -28,7 +28,7 @@ export class ListJobApplicationsComponent implements OnInit {
 
   // @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  displayedColumns: string[] = ['description', 'application_date', 'location', 'status', 'contact', 'response_date'];
+  displayedColumns: string[] = ['description', 'application_date', 'location', 'status', 'contact', 'response_date', 'options'];
   dataSource: MatTableDataSource<JobApplicationElement>;
   Countries: any;
   constructor(
@@ -43,8 +43,7 @@ export class ListJobApplicationsComponent implements OnInit {
 
   list() {
     this.jobApplicationService.list().subscribe(data => {
-      this.dataSource = data.data;
-      // this.dataSource.paginator = this.paginator;
+      this.dataSource = this.jobApplicationService.transformTimestampsToDate(data.data);
     })
   }
 
@@ -58,7 +57,6 @@ export class ListJobApplicationsComponent implements OnInit {
   getReport() {
     this.jobApplicationService.getReport(this.dataSource).subscribe(data => {
       const reportURL = backend_url + data.data.reportRoute;
-      console.log(reportURL);
       window.open(reportURL, '_blank');
     })
   }
