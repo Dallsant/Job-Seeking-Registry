@@ -13,7 +13,9 @@ export class AddJobApplicationComponent implements OnInit {
 
   addJobApplicationForm: FormGroup;
   Countries: any;
-  Cities:any
+  Cities:any;
+  StatusOptions:string[];
+
   constructor(
     private fb: FormBuilder,
     private alertService: AlertService,
@@ -29,14 +31,19 @@ export class AddJobApplicationComponent implements OnInit {
   setCities(country){
     this.Cities = country.cities;
   }
+  getStatusOptions(){
+    this.jobApplicationService.getStatusOptions().subscribe(data=> {
+      this.StatusOptions = data.data;
+    })
+  }
   saveJobApplication() {
     // Parse dates to timestamp
     this.addJobApplicationForm.controls['application_date'].setValue(
-      Date.parse(this.addJobApplicationForm.value.application_date)
+      Date.parse(this.addJobApplicationForm.value.application_date)/1000
     );
     this.addJobApplicationForm.controls['response_date'].setValue(
       (typeof this.addJobApplicationForm.value.application_date === 'string')
-      ? Date.parse(this.addJobApplicationForm.value.response_date) : null
+      ? Date.parse(this.addJobApplicationForm.value.response_date)/1000 : null
     );
     this.jobApplicationService.add(this.addJobApplicationForm.value).subscribe(data => {
       this.alertService.success('Job Application Added');
@@ -45,20 +52,20 @@ export class AddJobApplicationComponent implements OnInit {
       this.alertService.danger('Error: ' + err.error.message);
     })
   }
-  // default: () => Math.round((new Date().getTime() / 100 ) )
   ngOnInit() {
     this.addJobApplicationForm = new FormGroup({
-      description: new FormControl(''),
-      company: new FormControl('', [Validators.required]),
-      position: new FormControl('', [Validators.required]),
-      country: new FormControl('', [Validators.required]),
+      description: new FormControl('sadsa'),
+      company: new FormControl('asdasdsa', [Validators.required]),
+      position: new FormControl('sss', [Validators.required]),
+      country: new FormControl('ssss', [Validators.required]),
       application_date: new FormControl(new Date() , [Validators.required]),
       response_date: new FormControl(new Date()),
-      contact: new FormControl('', [Validators.required]),
-      city: new FormControl('', [Validators.required])
+      contact: new FormControl('sadas@gmail.com', [Validators.required]),
+      city: new FormControl('sadasda', [Validators.required]),
+      status:  new FormControl('')
     });
-    // this.test();
     this.getCountries();
+    this.getStatusOptions();
   }
 
 }

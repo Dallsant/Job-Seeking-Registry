@@ -11,6 +11,7 @@ import { SessionInterceptor } from './interceptors/token.interceptor';
 import { ConfirmDirective } from './confirm.directive';
 import { AlertModule } from 'ngx-alerts';
 import { MatInputModule } from '@angular/material/input';
+import * as moment from 'moment';
 
 @NgModule({
   declarations: [

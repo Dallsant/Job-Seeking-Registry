@@ -6,7 +6,16 @@ const routes: Routes = [
   {
     path: 'job-applications',
     loadChildren: './modules/job-application/job-application.module#JobApplicationModule'
-},
+  },
+  {
+    path: 'session',
+    loadChildren: './modules/session/session.module#SessionModule'
+  }
+  ,
+  {
+    path: '',
+    loadChildren: './modules/session/session.module#SessionModule'
+  }
 ];
 
 @NgModule({

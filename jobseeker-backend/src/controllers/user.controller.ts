@@ -44,12 +44,7 @@ export class UserController {
     @requestBody()
     user: any,
   ): Promise<any> {
-    try {
-      await this.sessionServiceProvider.checkTokenValidity(this.request.headers['authentication']);
-    } catch (error) {
-      return this.responseObject.customResponse(true, "Invalid Session", 401);
-    }
-    let fields = {
+    const fields = {
       'name': 'string',
       'last_name': 'string',
       'email': 'string',
@@ -61,20 +56,19 @@ export class UserController {
     } catch (error) {
       return this.responseObject.setResponse();
     }
-
-    let already_exists =  (await this.userRepository.findOne({where:{username:user.username}}) !== null  )
-    if(already_exists === true){
+    const already_exists = (await this.userRepository.findOne({ where: { username: user.username } }) !== null)
+    if (already_exists === true) {
       return this.responseObject.customResponse(true, "User already exists", 422);
     }
     try {
-      let test = user.password;
+      const test = user.password;
       user.password = bcrypt.hashSync(user.password, 10);
-      bcrypt.hash(test, 10, function(err:any, hash:any) {
+      bcrypt.hash(test, 10, function (err: any, hash: any) {
         if (err) { throw (err); }
-        bcrypt.compare(test, user.password, function(err:any, result:any) {
-            if (err) { throw (err); }
+        bcrypt.compare(test, user.password, function (err: any, result: any) {
+          if (err) { throw (err); }
         });
-    });
+      });
       await this.userRepository.create(user);
       return this.responseObject.customResponse(false, "User Created", 200);
     } catch (error) {
@@ -91,7 +85,7 @@ export class UserController {
       return this.responseObject.customResponse(true, "Invalid Session", 401);
     }
     try {
-      let count = await this.userRepository.count();
+      const count = await this.userRepository.count();
       this.responseObject.data = count;
       return this.responseObject.successResponse();
     } catch (error) {
@@ -106,9 +100,9 @@ export class UserController {
       await this.sessionServiceProvider.checkTokenValidity(this.request.headers['authentication']);
     } catch (error) {
       return this.responseObject.customResponse(true, "Invalid Session", 401);
-    }  
+    }
     try {
-      let applications = await this.userRepository.find({
+      const applications = await this.userRepository.find({
         fields: {
           'name': true,
           'last_name': true,
@@ -133,7 +127,7 @@ export class UserController {
     } catch (error) {
       return this.responseObject.customResponse(true, "Invalid Session", 401);
     }
-    let fields = {
+    const fields = {
       'name': 'string',
       'last_name': 'string',
       'email': 'string',
@@ -144,8 +138,8 @@ export class UserController {
     } catch (error) {
       return this.responseObject.setResponse();
     }
-    let oldUserData = this.userRepository.findOne({ where: { id: user.id } })
-    let newUserData:any = oldUserData;
+    const oldUserData = this.userRepository.findOne({ where: { id: user.id } })
+    const newUserData: any = oldUserData;
     newUserData.name = user.name;
     newUserData.last_name = user.last_name;
     newUserData.email = user.email;

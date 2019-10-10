@@ -1,0 +1,23 @@
+mat-sidenav-container {
+    height: 100vh !important;
+}
+.non-side-var {
+    overflow-x: hidden !important;
+}
+/* .mat-divider{
+    border-top: 1px solid black !important;
+    text-decoration: none !important;
+} */
+
+.align-center {
+    text-align: center !important
+}
+
+.filler {
+    flex: 1 1 auto;
+}
+
+mat-card-title {
+    margin: 15px;
+    text-align: center !important
+}

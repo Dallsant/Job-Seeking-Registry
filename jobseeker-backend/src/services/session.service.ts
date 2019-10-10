@@ -34,8 +34,9 @@ export class SessionServiceProvider implements Provider<any> {
   async getUserFromToken(token: any) {
     try {
       const tokenInfo: any = await this.sessionRepository.findOne({ where: { token: token } });
-      const username: any = tokenInfo.username;
-      return await this.userRepository.findOne({ where: { username: username } });
+      const user: any = tokenInfo.user;
+      const userData = await this.userRepository.findOne({ where: { id: user } });
+      return userData;
     } catch (error) {
       throw error;
     }
@@ -89,7 +90,7 @@ export class SessionServiceProvider implements Provider<any> {
       const sessionsToUpdate = expiredSessions.map((item: any) => {
         return item.token;
       })
-      for (let session of expiredSessions) {
+      for (const session of expiredSessions) {
         session['is_active'] = false;
         session['logout_date'] = now;
         delete session['id'];

@@ -1,9 +1,18 @@
 <mat-sidenav-container class="non-side-var">
 
   <mat-sidenav-content>
-      <mat-toolbar color="primary"><button mat-button (click)="sidenav.toggle()">
-          <mat-icon>menu</mat-icon>
-        </button> </mat-toolbar>
+    <mat-toolbar color="primary">
+      <span> Job Registry App</span>
+      <span class="filler">
+      </span>
+      <button mat-button (click)="sidenav.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button>
+
+      <!-- <button mat-button  (click)="sidenav.toggle()">
+          <mat-icon >menu</mat-icon>
+          </button>  -->
+    </mat-toolbar>
     <router-outlet></router-outlet>
 
   </mat-sidenav-content>
