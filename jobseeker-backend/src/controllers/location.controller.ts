@@ -67,7 +67,6 @@ export class LocationController {
     }
     try {
       this.responseObject.data = await this.locationRepository.find();
-      console.log("HEYY")
       return this.responseObject.successResponse();
     } catch (error) {
       return this.responseObject.defaultErrorResponse();

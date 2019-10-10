@@ -50,7 +50,7 @@ export class ListJobApplicationsComponent implements OnInit {
 
   openEditJobApplicationDialog(id): void {
     const dialogRef = this.dialog.open(EditJobApplicationDialog, {
-      width: '40vw',
+      width: '60vw',
       data: { id: id }
     });
   }
@@ -64,16 +64,8 @@ export class ListJobApplicationsComponent implements OnInit {
 
   applyFilter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    // if (this.dataSource.paginator) {
-    //   this.dataSource.paginator.firstPage();
-    // }
   }
-  // getCountries() {
-  //   this.jobApplicationService.list().subscribe(data => {
-  //     this.job = data.data;
-  //   })
-  // }
+
 
   deleteJobApplication(id:string){
     this.jobApplicationService.delete(id).subscribe(data => {
@@ -100,7 +92,6 @@ export class ListJobApplicationsComponent implements OnInit {
     this.refresh();
     this.list();
   }
-
 }
 
 @Component({
@@ -111,6 +102,8 @@ export class EditJobApplicationDialog implements OnInit {
 
   jobApplicationForm: FormGroup;
   Countries: any;
+  StatusOptions:any;
+  Cities:any;
 
   constructor(
     public dialogRef: MatDialogRef<EditJobApplicationDialog>,
@@ -119,30 +112,53 @@ export class EditJobApplicationDialog implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any) {
     this.jobApplicationForm = new FormGroup({
       description: new FormControl(''),
-      company: new FormControl('1', [Validators.required]),
-      position: new FormControl('1', [Validators.required]),
+      company: new FormControl('', [Validators.required]),
+      position: new FormControl('', [Validators.required]),
       location: new FormControl('', [Validators.required]),
       application_date: new FormControl('', [Validators.required]),
       response_date: new FormControl(''),
-      contact: new FormControl('', [Validators.required])
+      contact: new FormControl('', [Validators.required]),
+      status: new FormControl('', [Validators.required])
     })
   }
-
+  // Date.parse(data.data.application_date)/1000
   ngOnInit() {
     this.jobApplicationService.getDetail(this.data.id).subscribe(data => {
       this.jobApplicationForm.get('description').setValue(data.data.description);
       this.jobApplicationForm.get('company').setValue(data.data.company);
       this.jobApplicationForm.get('position').setValue(data.data.position);
       this.jobApplicationForm.get('location').setValue(data.data.location);
-      this.jobApplicationForm.get('application_date').setValue(data.data.application_date);
+      this.jobApplicationForm.get('application_date').setValue(data.data.application_date)
       this.jobApplicationForm.get('response_date').setValue(data.data.response_date);
       this.jobApplicationForm.get('contact').setValue(data.data.contact);
       this.jobApplicationForm.get('status').setValue(data.data.status);
     });
+    this.getCountries();
+    this.getStatusOptions();
+  }
+  getCountries() {
+    this.jobApplicationService.listCountries().subscribe(data => {
+      this.Countries = data.data;
+    })
+  }
+  setCities(country){
+    this.Cities = country.cities;
+  }
+  getStatusOptions(){
+    this.jobApplicationService.getStatusOptions().subscribe(data=> {
+      this.StatusOptions = data.data;
+    })
   }
 
   edit() {
     this.jobApplicationService.update(this.data.id, this.jobApplicationForm.value).subscribe(data => {
+      this.jobApplicationForm.controls['application_date'].setValue(
+        Date.parse(this.jobApplicationForm.value.application_date)/1000
+      );
+      this.jobApplicationForm.controls['response_date'].setValue(
+        (typeof this.jobApplicationForm.value.application_date === 'string')
+        ? Date.parse(this.jobApplicationForm.value.response_date)/1000 : null
+      );
       this.alertService.success('Job Application Updated');
       this.jobApplicationForm.reset();
       this.jobApplicationService.detectChanges(this.jobApplicationForm.value)
