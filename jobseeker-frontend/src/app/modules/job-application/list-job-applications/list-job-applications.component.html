@@ -55,7 +55,7 @@
                 <mat-icon matTooltip="Editar" matTooltipPosition="above">edit</mat-icon>
               </button>
               <button mat-icon-button color="warn">
-                <mat-icon matTooltip="Eliminar" matTooltipPosition="above">delete_forever</mat-icon>
+                <mat-icon matTooltip="Eliminar" (click)="deleteJobApplication(element.id)"matTooltipPosition="above">delete_forever</mat-icon>
               </button>
             </td>
           </ng-container>

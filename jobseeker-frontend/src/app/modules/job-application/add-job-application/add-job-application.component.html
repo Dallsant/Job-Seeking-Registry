@@ -1,8 +1,8 @@
 <ngx-alerts></ngx-alerts>
 <div class="container" fxLayout="row" fxLayoutAlign="center center">
-    <a matTooltip="List" routerLink="/job-applications/list"><button class="float-button" mat-fab color="primary">
-        <mat-icon>list</mat-icon>
-      </button></a>
+  <a matTooltip="List" routerLink="/job-applications/list"><button class="float-button" mat-fab color="primary">
+      <mat-icon>list</mat-icon>
+    </button></a>
   <mat-card>
     <mat-card-title fxLayoutAlign="center center">New Job Application</mat-card-title>
     <mat-card-content>
@@ -13,58 +13,56 @@
             <input matInput formControlName="company">
           </mat-form-field>
           <mat-form-field appearance="outline" fxFlex>
-              <mat-label>Position</mat-label>
-              <input matInput formControlName="position">
-            </mat-form-field>
-            <mat-form-field appearance="outline" fxFlex>
-                <mat-label>Contact</mat-label>
-                <input type="email" matInput formControlName="contact">
-              </mat-form-field>
-
+            <mat-label>Position</mat-label>
+            <input matInput formControlName="position">
+          </mat-form-field>
+          <mat-form-field appearance="outline" fxFlex>
+            <mat-label>Contact</mat-label>
+            <input type="email" matInput formControlName="contact">
+          </mat-form-field>
         </div>
         <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
-            <mat-form-field appearance="outline" fxFlex>
-                <mat-label>Application Date</mat-label>
-                <input  matInput type="date" formControlName="application_date">
-            </mat-form-field> 
-            <mat-form-field appearance="outline" fxFlex>
-                <mat-label>Response Date</mat-label>
-                <input  matInput type="date" formControlName="response_date">
-            </mat-form-field> 
-          </div>
+          <mat-form-field appearance="outline" fxFlex>
+            <mat-label>Application Date</mat-label>
+            <input matInput type="date" formControlName="application_date">
+          </mat-form-field>
+          <mat-form-field appearance="outline" fxFlex>
+            <mat-label>Response Date</mat-label>
+            <input matInput type="date" formControlName="response_date">
+          </mat-form-field>
+        </div>
         <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
 
           <mat-form-field appearance="outline" fxFlex>
             <mat-label>Country</mat-label>
             <mat-select formControlName="country">
-              <mat-option *ngFor="let country of Countries" (click)="setCities(country)"[value]="country.country">{{country.country}}</mat-option>
+              <mat-option *ngFor="let country of Countries" (click)="setCities(country)" [value]="country.country">{{country.country}}</mat-option>
             </mat-select>
-
           </mat-form-field>
           <mat-form-field appearance="outline" fxFlex>
-              <mat-label>City</mat-label>
-              <mat-select formControlName="city">
-                <mat-option *ngFor="let city of Cities" [value]="city.name">{{city.name}}</mat-option>
-              </mat-select>
-            </mat-form-field>
-            <mat-form-field appearance="outline" fxFlex>
-                <mat-label>Status</mat-label>
-                <mat-select formControlName="status">
-                  <mat-option *ngFor="let status of StatusOptions">{{status}}</mat-option>
-                </mat-select>
-              </mat-form-field>
+            <mat-label>City</mat-label>
+            <mat-select formControlName="city">
+              <mat-option *ngFor="let city of Cities" [value]="city.name">{{city.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline" fxFlex>
+            <mat-label>Status</mat-label>
+            <mat-select formControlName="status">
+              <mat-option *ngFor="let statusOption of StatusOptions" [value]="statusOption">{{statusOption}}</mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
-  
+
         <div fxLayout="row" fxLayout.lt-md="column" fxLayoutGap="20px" fxLayoutGap.lt-md="0px">
 
-        <mat-form-field appearance="outline" fxFlex>
+          <mat-form-field appearance="outline" fxFlex>
             <mat-label>Description</mat-label>
             <textarea matInput formControlName="description"></textarea>
           </mat-form-field>
         </div>
 
         <mat-card-actions fxLayoutAlign="end">
-          <button type="submit" mat-raised-button color="accent" >Save</button>
+          <button type="submit" mat-raised-button color="accent">Save</button>
         </mat-card-actions>
       </form>
     </mat-card-content>

@@ -69,10 +69,22 @@ export class JobApplicationService {
     return this.httpClient.patch<any>(backend_url + '/job-applications/'+id, JSON.stringify(params), httpOptions)
       .pipe();
   }
+
+  delete(id:any): Observable<any> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+    console.log(backend_url + '/job-applications/' + id)
+    return this.httpClient.delete<any>(backend_url + '/job-applications/' + id, httpOptions).pipe();
+  }
+
   transformTimestampsToDate(data:any){
     data.forEach(element => {
-      element.application_date = moment.unix(data.application_date).format('DD/MM/YYYY');
-      element.response_date = moment.unix(data.response_date).format('DD/MM/YYYY');
+      if(typeof element.application_date === 'number') element.application_date = moment.unix(element.application_date).format('DD/MM/YYYY');
+      if(typeof element.response_date === 'number') element.response_date = moment.unix(element.response_date).format('DD/MM/YYYY');
+      // console.log(data.application_date)
     });
     return data;
   }

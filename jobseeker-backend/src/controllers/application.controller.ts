@@ -183,7 +183,7 @@ export class ApplicationController {
     }
     try {
       const application = await this.dataServiceProvider.checkUserAccessToApplication(this.request, id);
-      if (application.length) this.jobApplicationRepository.deleteById(id);
+      this.jobApplicationRepository.deleteById(id);
       return this.responseObject.successResponse();
     } catch (error) {
       return this.responseObject.customResponse(true, "There was an error while processing the request", 500);
@@ -202,7 +202,8 @@ export class ApplicationController {
       return this.responseObject.customResponse(true, "Invalid Session", 401);
     }
     try {
-      user = await this.sessionServiceProvider.getUserFromToken(this.request.headers.token);
+
+      user = await this.sessionServiceProvider.getUserFromToken(this.request.headers.authentication);
       const userString = `${user.name[0].toUpperCase()}.${user.last_name}`;
       const workbook = new Excel.Workbook();
       const tempFilePath = `./public/reports/${userString}${now}.xlsx`;

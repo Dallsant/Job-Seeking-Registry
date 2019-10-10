@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, Inject } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject, ChangeDetectorRef  } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -35,6 +35,7 @@ export class ListJobApplicationsComponent implements OnInit {
     public dialog: MatDialog,
     public jobApplicationService: JobApplicationService,
     private alertService: AlertService,
+    private changeDetectorRefs: ChangeDetectorRef
   ) {
     this.jobApplicationService.subject$.subscribe(data => {
       this.list();
@@ -73,8 +74,30 @@ export class ListJobApplicationsComponent implements OnInit {
   //     this.job = data.data;
   //   })
   // }
+
+  deleteJobApplication(id:string){
+    this.jobApplicationService.delete(id).subscribe(data => {
+      this.refresh();
+      this.alertService.success('Job ApplicationDeleted');
+      this.updateListView(id);
+    }, err => {
+      this.alertService.danger('Error: ' + err.error.message);
+    })
+  }
+
+  updateListView(id:string){
+    this.dataSource.filter = id.trim().toLowerCase();
+  }
+
+  refresh(){
+    this.jobApplicationService.list().subscribe( (data)=>{
+      this.dataSource = data.data;
+      this.changeDetectorRefs.detectChanges();
+    }
+    )
+  }
   ngOnInit() {
-    // this.getCountries();
+    this.refresh();
     this.list();
   }
 
@@ -96,8 +119,8 @@ export class EditJobApplicationDialog implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any) {
     this.jobApplicationForm = new FormGroup({
       description: new FormControl(''),
-      company: new FormControl('', [Validators.required]),
-      position: new FormControl('', [Validators.required]),
+      company: new FormControl('1', [Validators.required]),
+      position: new FormControl('1', [Validators.required]),
       location: new FormControl('', [Validators.required]),
       application_date: new FormControl('', [Validators.required]),
       response_date: new FormControl(''),
