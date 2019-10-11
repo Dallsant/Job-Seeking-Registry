@@ -54,14 +54,14 @@ export class AddJobApplicationComponent implements OnInit {
   }
   ngOnInit() {
     this.addJobApplicationForm = new FormGroup({
-      description: new FormControl('sadsa'),
-      company: new FormControl('asdasdsa', [Validators.required]),
-      position: new FormControl('sss', [Validators.required]),
-      country: new FormControl('ssss', [Validators.required]),
+      description: new FormControl(''),
+      company: new FormControl('', [Validators.required]),
+      position: new FormControl('', [Validators.required]),
+      country: new FormControl('', [Validators.required]),
       application_date: new FormControl(new Date() , [Validators.required]),
       response_date: new FormControl(new Date()),
-      contact: new FormControl('sadas@gmail.com', [Validators.required]),
-      city: new FormControl('sadasda', [Validators.required]),
+      contact: new FormControl('', [Validators.required]),
+      city: new FormControl('', [Validators.required]),
       status:  new FormControl('')
     });
     this.getCountries();

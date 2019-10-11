@@ -5,13 +5,18 @@
       <span> Job Registry App</span>
       <span class="filler">
       </span>
-      <button mat-button (click)="sidenav.toggle()">
-        <mat-icon>menu</mat-icon>
-      </button>
+      <span *ngIf="isLogged===true">
+          <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="options">
+              <mat-icon>menu</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="logout()">
+                <span>LOGOUT</span>
+              </button>
+            </mat-menu>
+      </span>     
 
-      <!-- <button mat-button  (click)="sidenav.toggle()">
-          <mat-icon >menu</mat-icon>
-          </button>  -->
+
     </mat-toolbar>
     <router-outlet></router-outlet>
 

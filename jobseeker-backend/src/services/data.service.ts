@@ -29,6 +29,9 @@ export class DataServiceProvider implements Provider<any> {
     try {
       const token = request.headers.authorization;
       const session: any = await this.sessionServiceProvider.getSessionInfo(token);
+      console.log(session);
+      const user: any = await this.userRepository.findOne({ where: { id: session.user } })
+      console.log(user);
       // For some reason doesn't seem to work, to be fixed in the future
       // const jobApplications = await this.jobApplicationRepository.find({where:{user:session.user}});
       const jobApplications = await this.jobApplicationRepository.find();
@@ -37,7 +40,7 @@ export class DataServiceProvider implements Provider<any> {
       });
       return filteredApplications;
     } catch (error) {
-      throw error;
+      console.log(error)
     }
   }
 

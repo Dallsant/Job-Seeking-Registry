@@ -93,7 +93,7 @@ export class ApplicationController {
       return this.responseObject.customResponse(true, "Invalid Session", 401);
     }
     try {
-      const userApps = await this.dataServiceProvider.getUserApplications(this.request);
+      const userApps: any = await this.dataServiceProvider.getUserApplications(this.request);
       const count = userApps.length;
       this.responseObject.data = count;
       return this.responseObject.successResponse();

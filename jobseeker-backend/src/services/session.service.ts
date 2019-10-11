@@ -68,7 +68,7 @@ export class SessionServiceProvider implements Provider<any> {
     }
   }
 
-  async endSession(token: string) {
+  async endSession(token: any) {
     try {
       const session: any = await this.sessionRepository.findOne({ where: { token: token, 'is_active': true } });
       const endedSession: any = session;

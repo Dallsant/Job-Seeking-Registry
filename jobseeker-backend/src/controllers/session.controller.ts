@@ -63,7 +63,7 @@ export class SessionController {
       return this.responseObject.setResponse();
     }
     try {
-      const user= await this.userRepository.findOne({ where: { username: credentials.username } })
+      const user = await this.userRepository.findOne({ where: { username: credentials.username } })
       if (user !== null) {
         const password_verification = this.sessionServiceProvider.validatePassword(user.password, credentials.password);
         if (password_verification === true) {
@@ -75,34 +75,26 @@ export class SessionController {
         }
       } else {
         return this.responseObject.customResponse(true, "User doesn't exist", 422);
-      }   
+      }
     } catch (error) {
       return this.responseObject.defaultErrorResponse()
     }
   }
 
-  @post('/logout')
-  async logout(
-    @requestBody()
-    session: any,
-  ): Promise<any> {
+  @get('/logout')
+  async logout(): Promise<any> {
     try {
       await this.sessionServiceProvider.checkTokenValidity(this.request.headers['authentication']);
     } catch (error) {
       return this.responseObject.customResponse(true, "Invalid Session", 401);
     }
-    const fields = {
-      'token': 'string',
-    }
     try {
-      this.responseObject.validateRequest(session, fields);
+      await this.sessionServiceProvider.endSession(this.request.headers['authetication']);
+      this.responseObject.customResponse(false, 'See you later!', 200);
+      return this.responseObject.successResponse();
     } catch (error) {
-      return this.responseObject.setResponse();
-    }
-    try {
-      this.sessionServiceProvider.endSession(session.token);
-    } catch (error) {
-      return this.responseObject.defaultErrorResponse()
+      return this.responseObject.defaultErrorResponse();
     }
   }
 }
+

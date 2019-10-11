@@ -11,13 +11,14 @@ import { SessionInterceptor } from './interceptors/token.interceptor';
 import { ConfirmDirective } from './confirm.directive';
 import { AlertModule } from 'ngx-alerts';
 import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule} from '@angular/material/menu';
+
 import * as moment from 'moment';
 
 @NgModule({
   declarations: [
     AppComponent,
     ConfirmDirective,
-
   ],
   imports: [
     BrowserModule,
@@ -27,6 +28,7 @@ import * as moment from 'moment';
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
+    MatMenuModule,
     AlertModule.forRoot({maxMessages: 5, timeout: 5000, position: 'right'})
   ],
   providers: [
