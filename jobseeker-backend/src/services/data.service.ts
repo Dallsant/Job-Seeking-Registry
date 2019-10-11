@@ -27,18 +27,18 @@ export class DataServiceProvider implements Provider<any> {
   // ## Get all JobApplications based on the User making the request
   async getUserApplications(request: any) {
     try {
-      const token = request.headers.authorization;
-      const session: any = await this.sessionServiceProvider.getSessionInfo(token);
-      console.log(session);
-      const user: any = await this.userRepository.findOne({ where: { id: session.user } })
-      console.log(user);
-      // For some reason doesn't seem to work, to be fixed in the future
-      // const jobApplications = await this.jobApplicationRepository.find({where:{user:session.user}});
-      const jobApplications = await this.jobApplicationRepository.find();
-      const filteredApplications = jobApplications.filter((item: any) => {
-        return item.user !== session.user;
+      const token = request.headers.authentication;
+      const user: any = await this.sessionServiceProvider.getUserFromToken(token);
+
+      // Not able to retrieve anything that resembles a mongo ID
+      // const jobApps:any = await this.jobApplicationRepository.find({ where: { 'user': user.id } });
+
+      let jobApps: any = await this.jobApplicationRepository.find();
+      jobApps = jobApps.filter((item: any) => {
+        return item.user === user.id;
       });
-      return filteredApplications;
+      return jobApps;
+
     } catch (error) {
       console.log(error)
     }

@@ -84,23 +84,6 @@ export class ApplicationController {
       return this.responseObject.defaultErrorResponse();
     }
   }
-  @get('/job-applications/count')
-  async count(
-  ): Promise<any> {
-    try {
-      await this.sessionServiceProvider.checkTokenValidity(this.request.headers['authentication']);
-    } catch (error) {
-      return this.responseObject.customResponse(true, "Invalid Session", 401);
-    }
-    try {
-      const userApps: any = await this.dataServiceProvider.getUserApplications(this.request);
-      const count = userApps.length;
-      this.responseObject.data = count;
-      return this.responseObject.successResponse();
-    } catch (error) {
-      return this.responseObject.customResponse(true, "There was an error while handling the request", 500);
-    }
-  }
 
   @get('/job-applications')
   async find(

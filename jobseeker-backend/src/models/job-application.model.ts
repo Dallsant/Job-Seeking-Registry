@@ -1,5 +1,5 @@
 import { Entity, model, property, belongsTo } from '@loopback/repository';
-import {User} from './user.model';
+import { User } from './user.model';
 @model({ settings: { strict: false } })
 export class JobApplication extends Entity {
 
@@ -12,12 +12,6 @@ export class JobApplication extends Entity {
     id: true,
   })
   id: string;
-
-  @property({
-    type: 'string',
-    required: true
-  })
-  user: string;
 
   @property({
     type: 'string',
@@ -35,6 +29,12 @@ export class JobApplication extends Entity {
     type: 'string',
     required: true
   })
+  user: string;
+
+  @property({
+    type: 'string',
+    required: true
+  })
   position: string;
 
   @property({
@@ -46,7 +46,7 @@ export class JobApplication extends Entity {
   @property({
     type: 'number',
     required: true,
-    default:0
+    default: 0
   })
   application_date: number;
 
