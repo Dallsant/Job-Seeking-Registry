@@ -9,8 +9,6 @@ import { Router } from '@angular/router';
 
 export  let isLogged: Boolean = false;
 
-
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -43,7 +41,7 @@ export class AppComponent {
       this.isLogged === true;
     }
   }
- 
+  
   ngOnInit() {
     this.verifyUserConnection()
     this.sessionService.isLoggedIn.subscribe(logIn=>{

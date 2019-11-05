@@ -26,27 +26,19 @@ export class DataServiceProvider implements Provider<any> {
 
   // ## Get all JobApplications based on the User making the request
   async getUserApplications(request: any) {
-    try {
       const token = request.headers.authentication;
       const user: any = await this.sessionServiceProvider.getUserFromToken(token);
-
       // Not able to retrieve anything that resembles a mongo ID
-      // const jobApps:any = await this.jobApplicationRepository.find({ where: { 'user': user.id } });
-
+      const sjobApps: any = await this.jobApplicationRepository.find({ where: { 'user': { 'inq': ["5da08e15a307b427981f5ab0"] } } });
       let jobApps: any = await this.jobApplicationRepository.find();
       jobApps = jobApps.filter((item: any) => {
         return item.user === user.id;
       });
       return jobApps;
-
-    } catch (error) {
-      console.log(error)
-    }
   }
 
   //Verify if the User making the request has access to that particular Application
   async checkUserAccessToApplication(request: any, id: any) {
-    try {
       const token = request.headers.authentication;
       const session: any = await this.sessionServiceProvider.getSessionInfo(token);
       const jobApplication: any = await this.jobApplicationRepository.findOne({ where: { id: id } });
@@ -55,9 +47,6 @@ export class DataServiceProvider implements Provider<any> {
       } else {
         throw 'Access Denied';
       }
-    } catch (error) {
-      throw error;
-    }
   }
 
   getCurrentTime() {
