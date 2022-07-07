@@ -57,7 +57,7 @@
     "bcrypt": "^3.0.6",
     "exceljs": "^3.0.0",
     "loopback-connector-mongodb": "^4.2.0",
-    "moment": "^2.24.0"
+    "moment": "^2.29.4"
   },
   "devDependencies": {
     "@loopback/build": "^2.0.10",
